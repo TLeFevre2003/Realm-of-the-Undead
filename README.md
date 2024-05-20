@@ -47,3 +47,5 @@ For a comprehensive insight into our implementation of JavaScript language synta
 - Add priority tiles to pathfinding.
 - Add ability to choose spawn point in map editor.
 - Explore caching all paths and saving them to a file that can be quickly loaded each game.
+- Adjust It so zombies respawn close to you when they are far away.
+- Make zombies spawn from a pool throughout the round, not right away.
