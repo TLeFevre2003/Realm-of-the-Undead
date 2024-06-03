@@ -50,3 +50,9 @@ For a comprehensive insight into our implementation of JavaScript language synta
 - Adjust It so zombies respawn close to you when they are far away.
 - Make zombies spawn from a pool throughout the round, not right away.
 - Spawner tiles that dictate where zombies can spawn so they cant just spawn anywhere
+
+
+
+# Current tasks
+- Replace long cases using dictionaries
+- Add Add controller support
