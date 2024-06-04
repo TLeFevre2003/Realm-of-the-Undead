@@ -25,6 +25,9 @@ export class Gun {
   #upgrade = 0;
   #audio = new Audio("./assets/GunShoot.mp3");
 
+  #cooldown = 20
+  #cooldown_timer = 0
+
   constructor(
     max_ammo_in,
     name_in,
@@ -143,26 +146,23 @@ export class Gun {
     }
   }
 
+  updateCoolDown() {
+    this.#cooldown_timer += 1
+  }
+
   // Shoots the gun
-  shoot(bullets, mouseX, mouseY, player, camera) {
+  shoot(bullets, player, camera, angle) {
     // Calculate the angle between the shooter and the mouse position
 
-    if (this.#loaded_ammo > 0) {
+    if (this.#loaded_ammo > 0 && this.#cooldown_timer >= this.#cooldown) {
       // Create an Audio object with an M4A file
-
+      this.#cooldown_timer = 0
       // Play the sound
       this.#audio.pause();
       this.#audio.currentTime = 0;
       this.#audio.play();
 
       this.#loaded_ammo -= 1;
-      let x = camera.getObjectScreenPositionX(player.getX(), this.#posX + 4);
-      let y = camera.getObjectScreenPositionY(player.getY(), this.#posY + 2);
-
-      let deltaX = mouseX - x;
-      let deltaY = mouseY - y;
-
-      let angle = Math.atan2(deltaY, deltaX);
 
       for (let i = 0; i < this.#bullet_count; i++) {
         let angle_offset =
@@ -170,7 +170,7 @@ export class Gun {
           this.#bullet_accuracy;
 
         let bullet;
-        let directionX = player.whereIsMouseX(
+        let directionX = player.getDirectionX(
           camera.getPlayerScreenPositionX(player.getX())
         );
 
@@ -178,7 +178,7 @@ export class Gun {
           case "left":
             bullet = new Bullet(
               10,
-              this.#posX + this.#muzzle_dist_left,
+              this.#posX,
               this.#posY + 4,
               angle + angle_offset,
               this.#damage,
@@ -189,7 +189,7 @@ export class Gun {
           case "right":
             bullet = new Bullet(
               10,
-              this.#posX + this.#muzzle_dist_right,
+              this.#posX,
               this.#posY + 4,
               angle + angle_offset,
               this.#damage,
@@ -217,7 +217,7 @@ export class Gun {
   // updates the gun position
   updatePos(player, camera) {
     //console.log("update");
-    let directionX = player.whereIsMouseX(
+    let directionX = player.getDirectionX(
       camera.getPlayerScreenPositionX(player.getX())
     );
 
@@ -244,7 +244,7 @@ export class Gun {
     let ctx = camera.getCanvas();
 
     // gets the mouses' x position relitive to the player
-    let direction = player.whereIsMouseX(playerx);
+    let direction = player.getDirectionX(playerx);
 
     // x-3,y for facing and aiming left
     // x+18,y for facing and aiming right

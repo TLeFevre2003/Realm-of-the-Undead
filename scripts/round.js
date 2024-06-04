@@ -6,6 +6,8 @@ export class Round {
   damageModifier = 1.05;
   healthModifier = 1.05;
 
+
+  // Temporally changing zombnumber from 20 to 1 for testing purposes
   zombNumber = 20;
   zombDamage = 1;
   zombHealth = 50;

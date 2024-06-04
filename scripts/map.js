@@ -1,4 +1,3 @@
-import { Grass } from "./grass.js";
 import { Pit } from "./pit.js";
 import { Wall } from "./wall.js";
 import { AmmoCrate } from "./ammocrate.js";
@@ -12,6 +11,9 @@ import { GunShop } from "./gunshop.js";
 import { Sniper } from "./sniper.js";
 import { Rifle } from "./rifle.js";
 import { Shotgun } from "./shotgun.js";
+
+
+const TILE_WIDTH = 32
 
 export class Map {
   #path = "./assets/newmap.txt";
@@ -383,8 +385,8 @@ export class Map {
         let x_index = xindex + i;
         let y_index = yindex + j;
 
-        let x_pos = x + i * 32;
-        let y_pos = y + j * 32;
+        let x_pos = x + i * TILE_WIDTH;
+        let y_pos = y + j * TILE_WIDTH;
 
         if (x_index < this.#width && y_index < this.#height) {
           let tile = this.#mapArray[y_index][x_index];

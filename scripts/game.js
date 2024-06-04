@@ -113,6 +113,8 @@ export class Game {
       );
     }
 
+    this.player.activegun.updateCoolDown();
+
     this.#zombiePathFinding();
 
     // Move all the entities (zombies and bullets)

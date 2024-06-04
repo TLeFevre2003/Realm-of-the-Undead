@@ -12,11 +12,7 @@ export class Zombie extends Entity {
   #pathFindFrame;
   #frameNumber = 0;
   #total_frames = 0;
-  #stuck = false;
-  #stuck_frame;
   #last_path;
-  #stuck_max_frame;
-  #max_nodes = 100;
 
   constructor(
     damage_in,
@@ -147,13 +143,7 @@ export class Zombie extends Entity {
 
     let graph = map.getPathFindingMap();
 
-
-
-    // console.log( "zombie tiles " + zombTileX + " " + zombTileY)
-    // console.log( "player tiles " + playerTileX + " " + playerTileY)
-
     let path = null;
-
     
     if (astar_frame == true)
     {
@@ -163,13 +153,6 @@ export class Zombie extends Entity {
     {
       let cacheKey = `${zombTileX},${zombTileY},${playerTileX},${playerTileY}`;
       path = cache[cacheKey];
-
-
-
-      // if (Math.abs(player.getX() - this.getX()) < 5 && Math.abs(player.getY() - this.getY()) < 5)
-      // {
-      //   path = null;
-      // }
 
       if (close)
       {
@@ -182,13 +165,6 @@ export class Zombie extends Entity {
 
 
     }
-    // console.log(cache)
-    // console.log(Object.keys(cache).length);
-
-    // if (this.#last_path == null && path == null)
-    // {
-    //   this.#max_nodes+=10;
-    // }
 
     this.#last_path = path;
     if (path) {

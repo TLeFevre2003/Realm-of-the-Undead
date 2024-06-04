@@ -40,7 +40,7 @@ export class Player extends Entity {
     // this.activegun = this.#gun2;
   }
 
-  setMouseCoords(x, y) {
+  setDirection(x, y) {
     this.#mouseX = x;
     this.#mouseY = y;
   }
@@ -128,26 +128,32 @@ export class Player extends Entity {
     }
   }
 
-  shoot(bullets, mousex, mousey, camera) {
+  shoot(bullets, camera, angle) {
     if (this.activegun == null) {
       return;
     }
-    this.activegun.shoot(bullets, mousex, mousey, this, camera);
+
+    
+
+    this.activegun.shoot(bullets, this, camera, angle);
   }
 
-  whereIsMouseX(canPosX) {
+  getDirectionX(camPosX) {
     // locates the mouse in relation to the player
 
-    if (this.#mouseX > canPosX) {
+    // Move cam position to more the center
+    camPosX += 7
+
+    if (this.#mouseX > 0) {
       return "right";
-    } else if (this.#mouseX < canPosX) {
+    } else if (this.#mouseX < 0) {
       return "left";
     } else {
       return "right";
     }
   }
 
-  whereIsMouseY(canPosY) {
+  getDirectionY(canPosY) {
     if (this.#mouseY < canPosY) {
       return "above";
     } else if (this.#mouseY > canPosY) {
@@ -184,7 +190,7 @@ export class Player extends Entity {
     let mapPositionX = camera.getPlayerScreenPositionX(this.getX());
     let mapPositionY = camera.getPlayerScreenPositionY(this.getY());
 
-    let direction = this.whereIsMouseX(mapPositionX);
+    let direction = this.getDirectionX(mapPositionX);
 
     switch (direction) {
       case "left":

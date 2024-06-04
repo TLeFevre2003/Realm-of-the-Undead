@@ -1,4 +1,3 @@
-import { Grass } from "./grass.js";
 import { Pit } from "./pit.js";
 import { Wall } from "./wall.js";
 import { AmmoCrate } from "./ammocrate.js";

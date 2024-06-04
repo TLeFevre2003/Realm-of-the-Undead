@@ -14,7 +14,12 @@ map.loadMap().then(() => {
 
   const eventHandler = new EventHandler();
   console.log("Events loaded");
-  setInterval(() => gameInstance.gameLoop(), 8.333);
+
+  
+  setInterval(() => {
+    gameInstance.gameLoop();
+    eventHandler.updateGamepadInput(gameInstance.player, map, gameInstance);
+  }, 8.333);
 
   document.addEventListener("keydown", (event) => {
     eventHandler.handleKeyDown(event, gameInstance.player, map);
@@ -29,7 +34,7 @@ map.loadMap().then(() => {
   });
 
   document.querySelector("#myCanvas").addEventListener("mousemove", (event) => {
-    eventHandler.setMousePosition(event, gameInstance.player);
+    eventHandler.setMousePosition(event, gameInstance.player, gameInstance);
   });
 
   document
@@ -38,4 +43,12 @@ map.loadMap().then(() => {
       // Prevent the default right-click menu from appearing
       event.preventDefault();
     });
+
+  window.addEventListener("gamepadconnected", (event) => {
+    eventHandler.handleGamepadConnected(event);
+  });
+
+  window.addEventListener("gamepaddisconnected", (event) => {
+    eventHandler.handleGamepadDisconnected(event);
+  });
 });
