@@ -49,27 +49,13 @@ export class Round {
 
       var path = this.getRandomString("one", "two");
 
-      let img_path_left = "./assets/zombie/zombie_fem_left.png";
-      let img_path_right = "./assets/zombie/zombie_fem_right.png";
-
-      switch (path) {
-        case "one":
-          img_path_left = "./assets/zombie/zombie_fem_left.png";
-          img_path_right = "./assets/zombie/zombie_fem_right.png";
-          break;
-
-        case "two":
-          img_path_left = "./assets/zombie/zombie_male_left.png";
-          img_path_right = "./assets/zombie/zombie_male_right.png";
-          break;
-      }
+      let img_path = "./assets/player/player.png";
 
       if (map.getWalkthrough(zombieTileX, zombieTileY)) {
         zombies[zombieTileX][zombieTileY].push(
           new Zombie(
             this.zombDamage * this.damageModifier ** (this.currentRound - 1),
-            img_path_left,
-            img_path_right,
+            img_path,
             this.zombHealth * this.healthModifier ** (this.currentRound - 1),
             this.zombHealth * this.healthModifier ** (this.currentRound - 1),
             this.zombSpeed * this.speedModifier ** (this.currentRound - 1),

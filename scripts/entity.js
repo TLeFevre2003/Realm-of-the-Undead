@@ -4,8 +4,7 @@ export class Entity {
   #speed;
   #health;
   #max_health;
-  #sprite_left;
-  #sprite_right;
+  #sprite;
   radius = 6;
   xbound;
   ybound;
@@ -18,8 +17,7 @@ export class Entity {
 
   // added a comma since there was an error ;)
   constructor(
-    spriteLeft_in,
-    spriteRight_in,
+    sprite_in,
     health_in,
     max_health_in,
     speed_in,
@@ -33,10 +31,8 @@ export class Entity {
     this.#speed = speed_in;
     this.#health = health_in;
     this.#max_health = max_health_in;
-    this.#sprite_left = new Image();
-    this.#sprite_left.src = spriteLeft_in; // Set the source of the image
-    this.#sprite_right = new Image();
-    this.#sprite_right.src = spriteRight_in; // Set the source of the image
+    this.#sprite = new Image();
+    this.#sprite.src = sprite_in; // Set the source of the image
     this.xbound = mapX * 32;
     this.ybound = mapY * 32;
   }
@@ -173,8 +169,8 @@ export class Entity {
     }
 
     // determine offsets so entity collision is more accurate
-    let x_offset = 4;
-    let Y_offset = 1;
+    let x_offset = 4-8;
+    let Y_offset = 1-8;
 
     if (movementX < 0) {
       x_offset -= 1;
@@ -220,14 +216,9 @@ export class Entity {
     return this.#pos_y;
   }
 
-  // return entity left sprite
-  getSpriteLeft() {
-    return this.#sprite_left;
-  }
-
-  // return entity right sprite
-  getSpriteRight() {
-    return this.#sprite_right;
+  // return entity  sprite
+  getSprite() {
+    return this.#sprite;
   }
 
   // return entity x tile
@@ -249,7 +240,7 @@ export class Entity {
 
   // Draw the entity
   draw(ctx, x, y) {
-    ctx.drawImage(this.#sprite_right, x, y);
+    ctx.drawImage(this.#sprite, x, y);
     //draws the player's sprite dependant on the direction fed in
     //     switch (direction) {
     //         case "left":

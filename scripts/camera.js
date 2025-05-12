@@ -36,27 +36,27 @@ export class Camera {
   // gets the x screen position of the player
   getPlayerScreenPositionX(x) {
     if (x < this.#halfScreenWidth) {
-      return Math.floor(x);
+      return Math.floor(x)-8;
     }
     if (x > this.#rightSide) {
       let xpos = this.#halfScreenWidth + (x - this.#rightSide);
-      return Math.floor(xpos);
+      return Math.floor(xpos)-8;
     }
 
-    return Math.floor(this.#halfScreenWidth);
+    return Math.floor(this.#halfScreenWidth)-8;
   }
 
   // Gets the y screen position of the player
   getPlayerScreenPositionY(y) {
     if (y < this.#halfScreenHeight) {
-      return Math.floor(y);
+      return Math.floor(y)-8;
     }
     if (y > this.#bottomSide) {
       let ypos = this.#halfScreenHeight + (y - this.#bottomSide);
-      return Math.floor(ypos);
+      return Math.floor(ypos)-8;
     }
 
-    return Math.floor(this.#halfScreenHeight);
+    return Math.floor(this.#halfScreenHeight)-8;
   }
 
   // gets the X position that the left column of tiles start drawing on.

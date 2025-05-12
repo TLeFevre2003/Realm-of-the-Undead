@@ -8,7 +8,6 @@ export class Zombie extends Entity {
   alive = true;
   cooldown = 10;
   wait = 0;
-  #activeSprite;
   #pathFindFrame;
   #frameNumber = 0;
   #total_frames = 0;
@@ -16,8 +15,7 @@ export class Zombie extends Entity {
 
   constructor(
     damage_in,
-    sprite_left_in,
-    sprite_right_in,
+    sprite_in,
     health_in,
     max_health_in,
     speed_in,
@@ -29,8 +27,7 @@ export class Zombie extends Entity {
     total_frames_in
   ) {
     super(
-      sprite_left_in,
-      sprite_right_in,
+      sprite_in,
       health_in,
       max_health_in,
       speed_in,
@@ -39,7 +36,6 @@ export class Zombie extends Entity {
       xbound_in,
       ybound_in
     );
-    this.#activeSprite = this.getSpriteLeft();
     this.#damage = damage_in;
     this.#pathFindFrame = frames_in;
     this.#total_frames = total_frames_in;
@@ -87,7 +83,7 @@ export class Zombie extends Entity {
       screenPositionX >= -16 &&
       screenPositionY >= -16
     ) {
-      ctx.drawImage(this.#activeSprite, screenPositionX, screenPositionY);
+      ctx.drawImage(this.getSprite(), screenPositionX, screenPositionY);
 
       // get zombie health
       let maxHealth = this.getMaxHealth();
@@ -171,11 +167,9 @@ export class Zombie extends Entity {
       const nextStep = path;
 
       if (nextStep.x > zombTileX) {
-        this.#activeSprite = this.getSpriteRight();
         this.setMoveLeftFalse();
         this.setMoveRightTrue();
       } else if (nextStep.x < zombTileX) {
-        this.#activeSprite = this.getSpriteLeft();
         this.setMoveRightFalse();
         this.setMoveLeftTrue();
       } else {
@@ -198,11 +192,9 @@ export class Zombie extends Entity {
       let diff_x = this.getX() - player.getX();
 
       if (diff_x > 1) {
-        this.#activeSprite = this.getSpriteRight();
         this.setMoveLeftTrue();
         this.setMoveRightFalse();
       } else if (diff_x < -1) {
-        this.#activeSprite = this.getSpriteLeft();
         this.setMoveRightTrue();
         this.setMoveLeftFalse();
       }

@@ -56,3 +56,5 @@ For a comprehensive insight into our implementation of JavaScript language synta
 # Current tasks
 - Replace long cases using dictionaries
 - Add Add controller support
+- Make all controlls adjust to user controls
+- organize js files into folders

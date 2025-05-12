@@ -11,6 +11,7 @@ export class Player extends Entity {
   activegun;
   #speed = 0.7;
   points = 0;
+  #angle = 0;
 
   constructor(
     gun1_in,
@@ -25,7 +26,6 @@ export class Player extends Entity {
   ) {
     super(
       sprite_in,
-      direction_in,
       health_in,
       max_health_in,
       speed_in,
@@ -35,14 +35,13 @@ export class Player extends Entity {
       ybound_in
     );
     this.#gun1 = new Pistol();
-
     this.activegun = this.#gun1;
-    // this.activegun = this.#gun2;
   }
 
   setDirection(x, y) {
     this.#mouseX = x;
     this.#mouseY = y;
+    this.#angle = Math.atan2(y, x); // Calculate angle in radians
   }
 
   addpoints(added) {
@@ -75,7 +74,6 @@ export class Player extends Entity {
     }
   }
 
-  // equips the given gun
   equipWeapon(gun) {
     if (this.#gun1 == null) {
       this.#gun1 = gun;
@@ -105,6 +103,7 @@ export class Player extends Entity {
   getPoints() {
     return this.points;
   }
+
   usePoints(points) {
     this.points -= points;
   }
@@ -115,15 +114,11 @@ export class Player extends Entity {
         if (this.#gun1 != null) {
           this.activegun = this.#gun1;
         }
-
-        // console.log("gun1")
         break;
-
       case 2:
         if (this.#gun2 != null) {
           this.activegun = this.#gun2;
         }
-        // console.log("gun2")
         break;
     }
   }
@@ -133,17 +128,13 @@ export class Player extends Entity {
       return;
     }
 
-    
+    this.#angle = angle;
 
     this.activegun.shoot(bullets, this, camera, angle);
   }
 
   getDirectionX(camPosX) {
-    // locates the mouse in relation to the player
-
-    // Move cam position to more the center
-    camPosX += 7
-
+    camPosX += 7;
     if (this.#mouseX > 0) {
       return "right";
     } else if (this.#mouseX < 0) {
@@ -162,7 +153,6 @@ export class Player extends Entity {
   }
 
   move(map) {
-    // Calculate the movement vector
     let movementX = 0;
     let movementY = 0;
 
@@ -179,56 +169,55 @@ export class Player extends Entity {
       movementX += this.#speed;
     }
 
-    // Give the movement values to moveby to calculate player new position
     this.moveBy(movementX, movementY, map);
   }
 
-  // draws the player
   draw(camera) {
     let ctx = camera.getCanvas();
 
     let mapPositionX = camera.getPlayerScreenPositionX(this.getX());
     let mapPositionY = camera.getPlayerScreenPositionY(this.getY());
 
-    let direction = this.getDirectionX(mapPositionX);
+    const angle = this.#angle + Math.PI / 2; // Adjust angle by subtracting 90 degrees (π/2 radians)
+    const playerSprite = this.getSprite();
+    const playerWidth = playerSprite.width;
+    const playerHeight = playerSprite.height;
 
-    switch (direction) {
-      case "left":
-        ctx.drawImage(this.getSpriteLeft(), mapPositionX, mapPositionY);
-        break;
+    // Save the current state
+    ctx.save();
 
-      case "right":
-        ctx.drawImage(this.getSpriteRight(), mapPositionX, mapPositionY);
-        break;
+    // Move the context to the player's position, taking into account the player's size
+    ctx.translate(mapPositionX + playerWidth / 2, mapPositionY + playerHeight / 2);
 
-      default:
-        ctx.drawImage(this.getSpriteLeft(), mapPositionX, mapPositionY);
-        break;
-    }
+    // Rotate the context
+    ctx.rotate(angle);
+
+    // Draw the player image, offset by the width/height to center it
+    ctx.drawImage(playerSprite, -playerWidth / 2, -playerHeight / 2);
+
+    // Restore the context to its original state
+    ctx.restore();
+
+    // Draw the health bars and points text
+    ctx.beginPath();
+    ctx.lineWidth = "1";
+    ctx.fillStyle = "black";
+    ctx.rect(5, 5, this.getMaxHealth() / 3, 5);
+    ctx.fill();
 
     ctx.beginPath();
     ctx.lineWidth = "1";
-    ctx.fillStyle = "black"; // Change to fillStyle
-    // Adjust the width and height to make the rectangle smaller
-    ctx.rect(5, 5, this.getMaxHealth() / 3, 5); // Fixed typo: "3d" to "3"
-    ctx.fill(); // Change to fill()
-
-    ctx.beginPath();
-    ctx.lineWidth = "1";
-    ctx.fillStyle = "red"; // Change to fillStyle
-    // Adjust the width and height to make the rectangle smaller
-    ctx.rect(5, 5, this.getHealth() / 3, 5); // Fixed typo: "3d" to "3"
-    ctx.fill(); // Change to fill()
+    ctx.fillStyle = "red";
+    ctx.rect(5, 5, this.getHealth() / 3, 5);
+    ctx.fill();
 
     ctx.font = "13px serif";
     let pointsstr = this.points.toString() + " points";
 
-    // Draw black border
     ctx.strokeStyle = "black";
-    ctx.lineWidth = 3; // Adjust the border thickness as needed
+    ctx.lineWidth = 3; 
     ctx.strokeText(pointsstr, 5, 100);
 
-    // Draw white fill
     ctx.fillStyle = "white";
     ctx.fillText(pointsstr, 5, 100);
   }

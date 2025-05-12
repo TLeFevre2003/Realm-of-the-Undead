@@ -84,8 +84,8 @@ export class EventHandler {
     const mouseX = (event.clientX - rect.left) * scaleX;
     const mouseY = (event.clientY - rect.top) * scaleY;
 
-    let x = game.getCamera().getPlayerScreenPositionX(game.player.getX());
-    let y = game.getCamera().getPlayerScreenPositionY(game.player.getY());
+    let x = game.getCamera().getPlayerScreenPositionX(game.player.getX())+8;
+    let y = game.getCamera().getPlayerScreenPositionY(game.player.getY())+8;
 
     let deltaX = mouseX - x;
     let deltaY = mouseY - y;
@@ -97,7 +97,7 @@ export class EventHandler {
 
   // Sets the mouse position when it is moved
   setMousePosition(event, player, game) {
-    // sets the canvas to rect
+    // sets the canvas to rects
     const rect = event.target.getBoundingClientRect();
     // gets the height and width of canvas
     const scaleX = event.target.width / rect.width;
@@ -106,8 +106,8 @@ export class EventHandler {
     const mouseX = (event.clientX - rect.left) * scaleX;
     const mouseY = (event.clientY - rect.top) * scaleY;
 
-    let x = game.getCamera().getPlayerScreenPositionX(game.player.getX()) + 7;
-    let y = game.getCamera().getPlayerScreenPositionY(game.player.getY());
+    let x = game.getCamera().getPlayerScreenPositionX(game.player.getX())+8;
+    let y = game.getCamera().getPlayerScreenPositionY(game.player.getY())+8;
 
     // let angle = Math.atan2(deltaY, deltaX);
 
@@ -163,7 +163,10 @@ export class EventHandler {
         const dpadRight = gamepad.buttons[15].pressed; // D-Pad Right
         const homeButton = gamepad.buttons[16]?.pressed; // Home button (if present)
 
-        player.setDirection(rightStickX, rightStickY);
+        if (rightStickX != 0 || rightStickY != 0)
+          {
+            player.setDirection(rightStickX, rightStickY);
+          }
 
         // Movement using D-Pad or left stick
         if (dpadUp || leftStickY < -0.5) {

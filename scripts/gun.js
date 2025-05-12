@@ -170,38 +170,15 @@ export class Gun {
           this.#bullet_accuracy;
 
         let bullet;
-        let directionX = player.getDirectionX(
-          camera.getPlayerScreenPositionX(player.getX())
+
+        bullet = new Bullet(
+          10,
+          player.getX()+8,
+          player.getY()+8,
+          angle + angle_offset,
+          this.#damage,
+          this.#bullet_speed
         );
-
-        switch (directionX) {
-          case "left":
-            bullet = new Bullet(
-              10,
-              this.#posX,
-              this.#posY + 4,
-              angle + angle_offset,
-              this.#damage,
-              this.#bullet_speed
-            );
-            break;
-
-          case "right":
-            bullet = new Bullet(
-              10,
-              this.#posX,
-              this.#posY + 4,
-              angle + angle_offset,
-              this.#damage,
-              this.#bullet_speed
-            );
-            break;
-
-          default:
-            // bullet = new Bullet(10, this.#posX + 4, this.#posY + 5, angle+angle_offset,this.#damage,this.#bulletSpeed);
-            console.log("gun jammed");
-            break;
-        }
 
         // Create a new bullet object with the calculated angle
 
@@ -216,22 +193,9 @@ export class Gun {
 
   // updates the gun position
   updatePos(player, camera) {
-    //console.log("update");
-    let directionX = player.getDirectionX(
-      camera.getPlayerScreenPositionX(player.getX())
-    );
 
-    switch (directionX) {
-      case "left":
-        this.#posX = player.getX() - 4;
-        this.#posY = player.getY() + 4;
-        break;
-
-      case "right":
-        this.#posX = player.getX() + 16;
-        this.#posY = player.getY() + 4;
-        break;
-    }
+    this.#posX = player.getX() - 4;
+    this.#posY = player.getY() + 4;
   }
 
   // Draws the gun and displays how much ammo it has
@@ -249,19 +213,8 @@ export class Gun {
     // x-3,y for facing and aiming left
     // x+18,y for facing and aiming right
     //changes the gun sprite and position based on the direction given by whereIsMouseX
-    switch (direction) {
-      case "left":
-        ctx.drawImage(this.#sprite_left, x - 5, y + 2);
-        break;
 
-      case "right":
-        ctx.drawImage(this.#sprite_right, x - 4, y + 2);
-        break;
-
-      default:
-        ctx.drawImage(this.#sprite_left, x - 5, y + 2);
-        break;
-    }
+    ctx.drawImage(this.#sprite_left, x - 5, y + 2);
 
     ctx.font = "10px serif";
     let ammoCount =

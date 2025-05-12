@@ -17,30 +17,7 @@ export class Game {
   constructor(map) {
     let gender = "m";
 
-    let img_path_left = "./assets/player/player_fem_left.png";
-    let img_path_right = "./assets/player/player_fem_right.png";
-
-    switch (gender) {
-      case "f":
-        img_path_left = "./assets/player/player_fem_left.png";
-        img_path_right = "./assets/player/player_fem_right.png";
-        break;
-
-      case "m":
-        img_path_left = "./assets/player/player_male_left.png";
-        img_path_right = "./assets/player/player_male_right.png";
-        break;
-    }
-
-    this.player = new Player(
-      "gun1",
-      "gun2",
-      img_path_left,
-      img_path_right,
-      100,
-      100,
-      100
-    );
+    let img_path = "./assets/player/player.png";
 
     this.#map = map;
     console.log("map loaded 2");
@@ -56,8 +33,7 @@ export class Game {
     this.player = new Player(
       "gun1",
       "gun2",
-      img_path_left,
-      img_path_right,
+      img_path,
       100,
       100,
       100,
@@ -113,7 +89,10 @@ export class Game {
       );
     }
 
-    this.player.activegun.updateCoolDown();
+    if (this.player.activegun != null)
+    {
+        this.player.activegun.updateCoolDown();
+    }
 
     this.#zombiePathFinding();
 
