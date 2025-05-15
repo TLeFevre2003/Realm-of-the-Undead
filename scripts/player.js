@@ -220,5 +220,22 @@ export class Player extends Entity {
 
     ctx.fillStyle = "white";
     ctx.fillText(pointsstr, 5, 100);
+
+
+    // Draw the circle pointer
+    // Calculate x and y components of offset for pointer
+    let halfPi = Math.PI / 2 // Add half pi to the angle because the drawing angle of player is offset from the unit circle
+    let xComponent = Math.cos(angle+halfPi) * 20
+    let yComponent = Math.sin(angle+halfPi) * 20 
+
+    console.log(angle)
+
+    let circlePositionX = (mapPositionX + playerWidth / 2) - xComponent
+    let circlePositionY = (mapPositionY + playerHeight / 2) - yComponent
+
+    ctx.lineWidth = 1; 
+    ctx.beginPath();
+    ctx.arc(circlePositionX, circlePositionY, 1, 0, 2 * Math.PI);
+    ctx.stroke();
   }
 }

@@ -49,12 +49,17 @@ For a comprehensive insight into our implementation of JavaScript language synta
 - Explore caching all paths and saving them to a file that can be quickly loaded each game.
 - Adjust It so zombies respawn close to you when they are far away.
 - Make zombies spawn from a pool throughout the round, not right away.
-- Spawner tiles that dictate where zombies can spawn so they cant just spawn anywhere
+- Spawner tiles that dictate where zombies can spawn so they cant just spawn anywhere.
+- Add bullet ammo types, bouncy, piercing and explosive.
+- Add turrets you can mount your gun.
+- Cap upgrades at 3, but let the first one double your loaded ammo.
+- Make it only double ammo the first upgrade.
+
 
 
 
 # Current tasks
 - Replace long cases using dictionaries
-- Add Add controller support
-- Make all controlls adjust to user controls
+- Add controller support
+- Make all controls adjust to user controls
 - organize js files into folders
