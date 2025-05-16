@@ -373,8 +373,12 @@ export class Map {
     x = Math.floor(x);
     y = Math.floor(y);
 
+    let tilesToDrawY = camera.getTilesYOnScreen()
+
+    console.log("Draw Y tiles: " + tilesToDrawY)
+
     for (let i = 0; i < 9; i++) {
-      for (let j = 0; j < 6; j++) {
+      for (let j = 0; j < tilesToDrawY; j++) {
         let x_index = xindex + i;
         let y_index = yindex + j;
 

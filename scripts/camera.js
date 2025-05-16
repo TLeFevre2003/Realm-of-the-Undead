@@ -195,4 +195,9 @@ getMapYIndex(playerY) {
   {
     return this.#screenHeight
   }
+
+  getTilesYOnScreen()
+  {
+    return Math.ceil(this.#screenHeight / this.#widthOfTile) + 1
+  }
 }
