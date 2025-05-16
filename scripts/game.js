@@ -34,11 +34,13 @@ export class Game {
       "gun1",
       "gun2",
       img_path,
+      0,
       100,
       100,
       100,
       this.#mapWidth,
-      this.#mapHeight
+      this.#mapHeight,
+      this.#camera
     );
     console.log("player loaded 2");
 
@@ -53,7 +55,7 @@ export class Game {
 
     console.log("bullets and zombz loaded");
 
-    this.#round = new Round();
+    this.#round = new Round(this.#camera);
     console.log("round initialized");
     this.#round.spawnRound(
       this.#zombies,
@@ -114,6 +116,7 @@ export class Game {
           if (bullet.getTileX() != x || bullet.getTileY() != y) {
             // Remove the bullet from the array
             this.bullets[x][y].splice(z, 1);
+            let rad = bullet.getRadius * this.#camera.getScale()
             if (
               bullet.getTileX() < this.#mapWidth &&
               bullet.getTileX() >= 0 &&
@@ -173,6 +176,8 @@ export class Game {
 
   // Handles the collision detection
   #checkColisions() {
+    let scale = this.#camera.getScale()
+
     // Check for zombie and bullet collisions
     this.bullets.forEach((arrayX, x) => {
       arrayX.forEach((arrayY, y) => {
@@ -192,12 +197,12 @@ export class Game {
                   (zombie, b) => {
                     let bulletX = bullet.getX();
                     let bulletY = bullet.getY();
-                    let bulletR = bullet.getRadius();
+                    let bulletR = bullet.getRadius() * scale;
 
                     // add 7 and 8 too offset the center of the hitbox
-                    let zombieX = zombie.getX() + 7;
-                    let zombieY = zombie.getY() + 8;
-                    let zombieR = zombie.getRadius();
+                    let zombieX = zombie.getX() + 7 * scale;
+                    let zombieY = zombie.getY() + 8 * scale;
+                    let zombieR = zombie.getRadius() * scale;
 
                     let distance = Math.sqrt(
                       (bulletX - zombieX) * (bulletX - zombieX) +
@@ -233,14 +238,14 @@ export class Game {
           zombTileY < this.#mapHeight
         ) {
           this.#zombies[zombTileX][zombTileY].forEach((zombie) => {
-            let playerX = this.player.getX() + 7;
-            let playerY = this.player.getY() + 8;
-            let playerR = this.player.getRadius();
+            let playerX = this.player.getX() + 7 * scale;
+            let playerY = this.player.getY() + 8 * scale;
+            let playerR = this.player.getRadius() * scale;
 
             // add 7 and 8 too offset the center of the hitbox
-            let zombieX = zombie.getX() + 7;
-            let zombieY = zombie.getY() + 8;
-            let zombieR = zombie.getRadius();
+            let zombieX = zombie.getX() + 7 * scale;
+            let zombieY = zombie.getY() + 8 * scale;
+            let zombieR = zombie.getRadius() * scale;
 
             let distance = Math.sqrt(
               (playerX - zombieX) * (playerX - zombieX) +

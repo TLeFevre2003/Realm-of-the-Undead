@@ -1,62 +1,85 @@
+const ORIGINALTILEWIDTH = 32
+const ORIGINALSCREENWIDTH = 256
+
+const PLAYEROFFSET = 8 // the radius of player is 16 so offset is half
+
 export class Camera {
   #pixelWidth;
   #pixelHeight;
-  #screenHeight = 128;
-  #screenWidth = 256;
+  #screenHeight;
+  #screenWidth;
   #halfScreenWidth;
   #rightSide;
   #halfScreenHeight;
   #bottomSide;
   canvas;
+  #numTilesWide;
+  #numTilesTall;
+  #Scale;
+  #widthOfTile;
+  #playerOffset;
+  
 
-  #tileWidth;
-  #tileHeight;
-
+  // width and height are number of tiles
   constructor(width, height) {
-    // this.#pixelHeight = height;
-    // this.#pixelWidth = width;
 
-    this.#tileWidth = width;
-    this.#tileHeight = height;
+    // Get the 2d context to draw on.
+    this.canvas = document.querySelector("#myCanvas").getContext("2d");
 
-    this.#pixelWidth = width * 32;
-    this.#pixelHeight = height * 32;
+    // Set the screens width and height in pixels based on the canvas.
+    let canvElm = document.querySelector("#myCanvas");
+    this.#screenHeight = canvElm.height;
+    this.#screenWidth = canvElm.width;
+    
+    // Set the number of tiles wide and tall of the map.
+    this.#numTilesWide = width;
+    this.#numTilesTall = height;
 
-    console.log(this.#pixelHeight);
+    // Find the pixel size of a tile.
+    this.#Scale = this.#screenWidth / ORIGINALSCREENWIDTH // eg 512 / 256 = 2. This is based on 256 being the original width.
+    this.#widthOfTile = ORIGINALTILEWIDTH * this.#Scale // 32 is original tile size
 
+    // Find the number of pixels wide and tall the map is.
+    this.#pixelWidth = this.#numTilesWide * this.#widthOfTile;
+    this.#pixelHeight = this.#numTilesTall * this.#widthOfTile;
+
+    // Find half the screen sizes
     this.#halfScreenWidth = this.#screenWidth / 2;
     this.#rightSide = this.#pixelWidth - this.#halfScreenWidth;
 
     this.#halfScreenHeight = this.#screenHeight / 2;
     this.#bottomSide = this.#pixelHeight - this.#halfScreenHeight;
 
-    this.canvas = document.querySelector("#myCanvas").getContext("2d");
+    // Find player Offset
+    this.#playerOffset = PLAYEROFFSET * this.#Scale
   }
 
   // gets the x screen position of the player
   getPlayerScreenPositionX(x) {
     if (x < this.#halfScreenWidth) {
-      return Math.floor(x)-8;
+      return Math.floor(x) - this.#playerOffset;
     }
     if (x > this.#rightSide) {
       let xpos = this.#halfScreenWidth + (x - this.#rightSide);
-      return Math.floor(xpos)-8;
+      return Math.floor(xpos) - this.#playerOffset;
     }
 
-    return Math.floor(this.#halfScreenWidth)-8;
+    return Math.floor(this.#halfScreenWidth) - this.#playerOffset;
   }
 
   // Gets the y screen position of the player
   getPlayerScreenPositionY(y) {
+
     if (y < this.#halfScreenHeight) {
-      return Math.floor(y)-8;
-    }
-    if (y > this.#bottomSide) {
-      let ypos = this.#halfScreenHeight + (y - this.#bottomSide);
-      return Math.floor(ypos)-8;
+      return Math.floor(y) - this.#playerOffset;
     }
 
-    return Math.floor(this.#halfScreenHeight)-8;
+    if (y > this.#bottomSide) {
+      let ypos = this.#halfScreenHeight + (y - this.#bottomSide);
+      return Math.floor(ypos) - this.#playerOffset;
+    }
+
+    return Math.floor(this.#halfScreenHeight) - this.#playerOffset;
   }
 
   // gets the X position that the left column of tiles start drawing on.
@@ -67,44 +90,63 @@ export class Camera {
     if (playerX > this.#rightSide) {
       return 0.0;
     }
-    return -1.0 * (playerX % 32.0);
+    return -1.0 * (playerX % this.#widthOfTile);
   }
 
-  // gets the Y position that the top row of tiles start drawing on.
   getMapScreenPositionY(playerY) {
-    if (playerY < this.#halfScreenHeight) {
-      return 0.0;
-    }
-    if (playerY > this.#bottomSide) {
-      return 0.0;
-    }
-    return -1.0 * (playerY % 32.0);
+    const tileSize = this.#widthOfTile;
+    const totalMapHeight = this.#numTilesTall * tileSize;
+    const screenHeight = this.#screenHeight;
+  
+    // Calculate unclamped camera position
+    let cameraY = playerY - this.#halfScreenHeight;
+  
+    // Clamp cameraY so it never scrolls past map bounds
+    cameraY = Math.max(0, Math.min(cameraY, totalMapHeight - screenHeight));
+  
+    // Compute top tile index
+    const topTileIndex = Math.floor(cameraY / tileSize);
+    const topTilePixelY = topTileIndex * tileSize;
+  
+    // Smooth offset within tile (always between -tileSize and 0)
+    const offset = -(cameraY - topTilePixelY);
+  
+    return offset;
   }
-
+  
   // Returns the left X index for drawing the map
   getMapXIndex(playerX) {
     if (playerX < this.#halfScreenWidth) {
       return 0;
     }
-    let x = Math.floor(playerX / 32 - 4);
-    if (x > this.#tileWidth - 8) {
-      x = this.#tileWidth - 8;
+    let x = Math.floor(playerX / this.#widthOfTile - 4);
+    if (x > this.#numTilesWide - 8) {
+      x = this.#numTilesWide - 8;
     }
     return x;
   }
-  // Returns the top Y index for drawing the map
-  getMapYIndex(playerY) {
-    if (playerY < this.#halfScreenHeight) {
-      return 0;
-    }
+// Returns the top Y index for drawing the map
+getMapYIndex(playerY) {
+  const tileSize = this.#widthOfTile;
 
-    let y = Math.floor(playerY / 32 - 2);
-
-    if (y > this.#tileHeight - 4) {
-      y = this.#tileHeight - 4;
-    }
-    return y;
+  if (playerY < this.#halfScreenHeight) {
+    return 0;
   }
+
+  const cameraY = playerY - this.#halfScreenHeight;
+  let topTileIndex = Math.floor(cameraY / tileSize);
+
+  const tilesOnScreen = Math.ceil(this.#screenHeight / tileSize);
+  const maxTopTileIndex = this.#numTilesTall - tilesOnScreen;
+
+  if (topTileIndex > maxTopTileIndex) {
+    topTileIndex = maxTopTileIndex;
+  }
+
+  return topTileIndex;
+}
+
+
 
   // Gets the screen X position for an item should work for both bullets and zombies.
   getObjectScreenPositionX(playerX, objectX) {
@@ -131,6 +173,26 @@ export class Camera {
 
   // clears the screen for the next frame
   clearScreen() {
-    this.canvas.clearRect(0, 0, 256, 128);
+    this.canvas.clearRect(0, 0, this.#screenWidth, this.#screenHeight);
+  }
+
+  getTileWidth()
+  {
+    return this.#widthOfTile
+  }
+
+  getScale()
+  {
+    return this.#Scale
+  }
+
+  getScreenWidth()
+  {
+    return this.#screenWidth
+  }
+
+  getScreenHeight()
+  {
+    return this.#screenHeight
   }
 }

@@ -25,6 +25,8 @@ export class Gun {
   #upgrade = 0;
   #audio = new Audio("./assets/GunShoot.mp3");
 
+  camera;
+
   #cooldown = 20
   #cooldown_timer = 0
 
@@ -42,7 +44,8 @@ export class Gun {
     loaded_ammo_in,
     muzzle_dist_left_in,
     muzzle_dist_right_in,
-    speed_in
+    speed_in,
+    camera
   ) {
     this.#current_ammo = max_ammo_in;
     this.#max_ammo = max_ammo_in;
@@ -66,16 +69,18 @@ export class Gun {
     this.#muzzle_dist_left = muzzle_dist_left_in;
     this.#muzzle_dist_right = muzzle_dist_right_in;
     this.#bullet_speed = speed_in;
+
+    this.camera = camera
   }
 
   // Return the Gun X tile
   getTileX() {
-    return Math.floor(this.#posX / 32);
+    return Math.floor(this.#posX / this.camera.getTileWidth());
   }
 
   // Return the Gun Y tile
   getTileY() {
-    return Math.floor(this.#posY / 32);
+    return Math.floor(this.#posY / this.camera.getTileWidth());
   }
   getCost() {
     return this.#cost;
@@ -173,11 +178,12 @@ export class Gun {
 
         bullet = new Bullet(
           10,
-          player.getX()+8,
-          player.getY()+8,
+          player.getX() + 8 * this.camera.getScale(),
+          player.getY() + 8 * this.camera.getScale(),
           angle + angle_offset,
           this.#damage,
-          this.#bullet_speed
+          this.#bullet_speed,
+          this.camera
         );
 
         // Create a new bullet object with the calculated angle
@@ -185,6 +191,9 @@ export class Gun {
         // Push the bullet into the bullets array
         let xindex = this.getTileX();
         let yindex = this.getTileY();
+
+        console.log("X index: " + xindex)
+        console.log("Y index: " + yindex)
 
         bullets[xindex][yindex].push(bullet);
       }
@@ -205,6 +214,8 @@ export class Gun {
 
     let playerx = camera.getPlayerScreenPositionX(player.getX());
 
+    let scale = camera.getScale()
+
     let ctx = camera.getCanvas();
 
     // gets the mouses' x position relitive to the player
@@ -216,26 +227,29 @@ export class Gun {
 
     ctx.drawImage(this.#sprite_left, x - 5, y + 2);
 
-    ctx.font = "10px serif";
+    let fontSize = 10 * scale
+    ctx.font = `${fontSize}px serif`;
+
+    // ctx.font = "10px serif";
     let ammoCount =
       this.#loaded_ammo.toString() + "  " + this.#current_ammo.toString();
 
     // Draw black border for name text
     ctx.strokeStyle = "black";
     ctx.lineWidth = 2; // Adjust the border thickness as needed
-    ctx.strokeText(this.#name, 220, 110);
+    ctx.strokeText(this.#name, 220 * scale, 110 * scale);
 
     // Draw white fill for name text
     ctx.fillStyle = "white";
-    ctx.fillText(this.#name, 220, 110);
+    ctx.fillText(this.#name, 220 * scale, 110 * scale);
 
     // Draw black border for ammo count text
     ctx.strokeStyle = "black";
     ctx.lineWidth = 2; // Adjust the border thickness as needed
-    ctx.strokeText(ammoCount, 220, 120);
+    ctx.strokeText(ammoCount, 220 * scale, 120 * scale);
 
     // Draw white fill for ammo count text
     ctx.fillStyle = "white";
-    ctx.fillText(ammoCount, 220, 120);
+    ctx.fillText(ammoCount, 220 * scale, 120 * scale);
   }
 }

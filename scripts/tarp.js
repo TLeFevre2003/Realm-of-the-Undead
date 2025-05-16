@@ -23,11 +23,13 @@ export class Tarp extends Tile {
     // Set the fill style to semi-transparent green
     ctx.fillStyle = "rgba(1, 1, 200, 0.5)"; // 0.5 alpha value for transparency
 
+    let scale = camera.getScale()
+
     // Draw a rectangle starting at (x, y) with width and height
-    var x = 140;
-    var y = 5;
-    var width = 110;
-    var height = 50;
+    var x = 140 * scale;
+    var y = 5 * scale;
+    var width = 110 * scale;
+    var height = 50 * scale;
     ctx.fillRect(x, y, width, height);
     let use;
     if (this.inventory == null) {
@@ -37,19 +39,19 @@ export class Tarp extends Tile {
     }
 
     ctx.fillStyle = "black";
-    ctx.font = "13px serif";
+    let fontSize = 13 * scale
+    ctx.font = `${fontSize}px serif`;
     use += " gun";
-    ctx.fillText(use, 141, 20);
+    ctx.fillText(use, 141 * scale, 20 * scale);
 
     ctx.fillStyle = "black";
-    ctx.font = "13px serif";
     let tip = "Press F to " + use;
-    ctx.fillText(tip, 141, 50);
+    ctx.fillText(tip, 141 * scale, 50 * scale);
   }
 
-  draw(x, y, camera) {
+  draw(x, y, camera, tileWidth) {
     let ctx = camera.getCanvas();
-    ctx.drawImage(this.sprite, x, y);
+    ctx.drawImage(this.sprite, x, y, tileWidth, tileWidth);
 
     if (this.inventory != null) {
       this.inventory.drawImage;

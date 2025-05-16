@@ -46,16 +46,16 @@ export class MysteryBox extends Store {
       // Equip a weapon based on the random number
       switch (randomnum) {
         case 1:
-          player.equipWeapon(new Pistol());
+          player.equipWeapon(new Pistol(player.camera));
           break;
         case 2:
-          player.equipWeapon(new Shotgun());
+          player.equipWeapon(new Shotgun(player.camera));
           break;
         case 3:
-          player.equipWeapon(new Rifle());
+          player.equipWeapon(new Rifle(player.camera));
           break;
         case 4:
-          player.equipWeapon(new Sniper());
+          player.equipWeapon(new Sniper(player.camera));
           break;
       }
     }

@@ -14,6 +14,7 @@ export class Entity {
   #movingRight = false;
   #screaming = false;
   #audio;
+  camera;
 
   // added a comma since there was an error ;)
   constructor(
@@ -24,7 +25,8 @@ export class Entity {
     pos_x_in,
     pos_y_in,
     mapX,
-    mapY
+    mapY,
+    camera
   ) {
     this.#pos_x = pos_x_in;
     this.#pos_y = pos_y_in;
@@ -33,8 +35,9 @@ export class Entity {
     this.#max_health = max_health_in;
     this.#sprite = new Image();
     this.#sprite.src = sprite_in; // Set the source of the image
-    this.xbound = mapX * 32;
-    this.ybound = mapY * 32;
+    this.camera = camera
+    this.xbound = mapX * camera.getTileWidth();
+    this.ybound = mapY * camera.getTileWidth();
   }
 
   setMoveUpTrue() {
@@ -132,17 +135,19 @@ export class Entity {
     let movementX = 0;
     let movementY = 0;
 
+    let scale = this.camera.getScale()
+
     if (this.isMovingUp()) {
-      movementY -= this.#speed;
+      movementY -= this.#speed * scale;
     }
     if (this.isMovingDown()) {
-      movementY += this.#speed;
+      movementY += this.#speed * scale;
     }
     if (this.isMovingLeft()) {
-      movementX -= this.#speed;
+      movementX -= this.#speed * scale;
     }
     if (this.isMovingRight()) {
-      movementX += this.#speed;
+      movementX += this.#speed * scale;
     }
 
     // Give the movement values to moveby to calculate player new position
@@ -168,24 +173,26 @@ export class Entity {
       movementY *= waterfactor;
     }
 
+    let scale = this.camera.getScale()
+
     // determine offsets so entity collision is more accurate
-    let x_offset = 4-8;
-    let Y_offset = 1-8;
+    let x_offset = (4 - 8) * scale;
+    let Y_offset = (1 - 8) * scale;
 
     if (movementX < 0) {
-      x_offset -= 1;
+      x_offset -= 1 * scale;
     }
 
     if (movementX > 0) {
-      x_offset += 9;
+      x_offset += 9 * scale;
     }
 
     if (movementY < 0) {
-      Y_offset += 2;
+      Y_offset += 2 * scale;
     }
 
     if (movementY > 0) {
-      Y_offset += 14;
+      Y_offset += 14 * scale;
     }
 
     // find the tile to check if enity can move through it
@@ -223,12 +230,12 @@ export class Entity {
 
   // return entity x tile
   getTileX(x_offset = 0) {
-    return Math.floor((this.#pos_x + x_offset) / 32);
+    return Math.floor((this.#pos_x + x_offset) / this.camera.getTileWidth());
   }
 
   // return entity y tile
   getTileY(y_offset = 0) {
-    return Math.floor((this.#pos_y + y_offset) / 32);
+    return Math.floor((this.#pos_y + y_offset) / this.camera.getTileWidth());
   }
 
   update_health() {}

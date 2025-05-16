@@ -21,28 +21,29 @@ export class Store extends Tile {
     let cost = this.getCost();
     ctx.fillStyle = "rgba(1, 1, 200, 0.5)"; // 0.5 alpha value for transparency
 
+    let scale = camera.getScale()
+
     // Draw a rectangle starting at (x, y) with width and height
-    var x = 140;
-    var y = 5;
-    var width = 110;
-    var height = 50;
+    var x = 140 * scale;
+    var y = 5 * scale;
+    var width = 110 * scale;
+    var height = 50 * scale;
     ctx.fillRect(x, y, width, height);
 
     let name = this.getName();
 
     ctx.fillStyle = "black";
-    ctx.font = "13px serif";
+    let fontSize = 13 * scale
+    ctx.font = `${fontSize}px serif`;
     let nametxt = "Buy: " + name;
-    ctx.fillText(nametxt, 141, 20);
+    ctx.fillText(nametxt, 141 * scale, 20 * scale);
 
     ctx.fillStyle = "black";
-    ctx.font = "13px serif";
     let costtxt = "Cost: " + cost.toString();
-    ctx.fillText(costtxt, 141, 35);
+    ctx.fillText(costtxt, 141 * scale, 35 * scale);
 
     ctx.fillStyle = "black";
-    ctx.font = "13px serif";
     let tip = "Press F to buy";
-    ctx.fillText(tip, 141, 50);
+    ctx.fillText(tip, 141 * scale, 50 * scale);
   }
 }

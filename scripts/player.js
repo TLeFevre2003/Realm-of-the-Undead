@@ -22,19 +22,21 @@ export class Player extends Entity {
     max_health_in,
     speed_in,
     xbound_in,
-    ybound_in
+    ybound_in,
+    camera
   ) {
     super(
       sprite_in,
       health_in,
       max_health_in,
       speed_in,
-      1080,
-      520,
+      1800,
+      2000,
       xbound_in,
-      ybound_in
+      ybound_in,
+      camera
     );
-    this.#gun1 = new Pistol();
+    this.#gun1 = new Pistol(camera);
     this.activegun = this.#gun1;
   }
 
@@ -156,17 +158,19 @@ export class Player extends Entity {
     let movementX = 0;
     let movementY = 0;
 
+    let speed = this.#speed * this.camera.getScale()
+
     if (this.isMovingUp()) {
-      movementY -= this.#speed;
+      movementY -= speed
     }
     if (this.isMovingDown()) {
-      movementY += this.#speed;
+      movementY += speed;
     }
     if (this.isMovingLeft()) {
-      movementX -= this.#speed;
+      movementX -= speed;
     }
     if (this.isMovingRight()) {
-      movementX += this.#speed;
+      movementX += speed;
     }
 
     this.moveBy(movementX, movementY, map);
@@ -174,68 +178,77 @@ export class Player extends Entity {
 
   draw(camera) {
     let ctx = camera.getCanvas();
-
+    let scale = camera.getScale();
+    
     let mapPositionX = camera.getPlayerScreenPositionX(this.getX());
     let mapPositionY = camera.getPlayerScreenPositionY(this.getY());
-
-    const angle = this.#angle + Math.PI / 2; // Adjust angle by subtracting 90 degrees (π/2 radians)
+    
+    const angle = this.#angle + Math.PI / 2;
     const playerSprite = this.getSprite();
-    const playerWidth = playerSprite.width;
-    const playerHeight = playerSprite.height;
-
+    const playerWidth = playerSprite.width * scale;
+    const playerHeight = playerSprite.height * scale;
+    
     // Save the current state
     ctx.save();
-
-    // Move the context to the player's position, taking into account the player's size
+    
+    // Move the context to the player's **scaled** center position
     ctx.translate(mapPositionX + playerWidth / 2, mapPositionY + playerHeight / 2);
-
+    
     // Rotate the context
     ctx.rotate(angle);
-
-    // Draw the player image, offset by the width/height to center it
-    ctx.drawImage(playerSprite, -playerWidth / 2, -playerHeight / 2);
-
+    
+    // Draw the player image, centered, and scaled
+    ctx.drawImage(
+      playerSprite,
+      -playerWidth / 2, // x offset
+      -playerHeight / 2, // y offset
+      playerWidth,       // scaled width
+      playerHeight       // scaled height
+    );
+    
     // Restore the context to its original state
-    ctx.restore();
+    ctx.restore();    
 
     // Draw the health bars and points text
     ctx.beginPath();
     ctx.lineWidth = "1";
     ctx.fillStyle = "black";
-    ctx.rect(5, 5, this.getMaxHealth() / 3, 5);
+    ctx.rect(5 * scale, 5 * scale, this.getMaxHealth() * scale / 3, 5 * scale);
     ctx.fill();
 
     ctx.beginPath();
     ctx.lineWidth = "1";
     ctx.fillStyle = "red";
-    ctx.rect(5, 5, this.getHealth() / 3, 5);
+    ctx.rect(5 * scale, 5 * scale, this.getHealth() * scale / 3, 5 * scale);
     ctx.fill();
 
-    ctx.font = "13px serif";
+    let fontSize = 13 * scale
+
+    ctx.font = `${fontSize}px serif`;
     let pointsstr = this.points.toString() + " points";
 
     ctx.strokeStyle = "black";
     ctx.lineWidth = 3; 
-    ctx.strokeText(pointsstr, 5, 100);
+    ctx.strokeText(pointsstr, 5 * scale, 100 * scale);
 
     ctx.fillStyle = "white";
-    ctx.fillText(pointsstr, 5, 100);
+    ctx.fillText(pointsstr, 5 * scale, 100 * scale);
 
 
     // Draw the circle pointer
     // Calculate x and y components of offset for pointer
     let halfPi = Math.PI / 2 // Add half pi to the angle because the drawing angle of player is offset from the unit circle
-    let xComponent = Math.cos(angle+halfPi) * 20
-    let yComponent = Math.sin(angle+halfPi) * 20 
+    let xComponent = Math.cos(angle+halfPi) * 20 * scale
+    let yComponent = Math.sin(angle+halfPi) * 20 * scale
 
-    console.log(angle)
+    // console.log(angle)
 
     let circlePositionX = (mapPositionX + playerWidth / 2) - xComponent
     let circlePositionY = (mapPositionY + playerHeight / 2) - yComponent
 
-    ctx.lineWidth = 1; 
+    ctx.lineWidth = 1 * scale; 
     ctx.beginPath();
-    ctx.arc(circlePositionX, circlePositionY, 1, 0, 2 * Math.PI);
+    ctx.arc(circlePositionX, circlePositionY, 1 * scale, 0, 2 * Math.PI);
     ctx.stroke();
   }
 }

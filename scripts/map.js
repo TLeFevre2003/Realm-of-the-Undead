@@ -12,9 +12,6 @@ import { Sniper } from "./sniper.js";
 import { Rifle } from "./rifle.js";
 import { Shotgun } from "./shotgun.js";
 
-
-const TILE_WIDTH = 32
-
 export class Map {
   #path = "./assets/newmap.txt";
   #mapArray = [];
@@ -115,12 +112,6 @@ export class Map {
           console.log("Map Array:", this.#mapArray);
           console.log("Width:", this.#width);
           console.log("Height:", this.#height);
-
-          this.#pixelWidth = this.#width * 32;
-          this.#pixelHeight = this.#height * 32;
-
-          console.log(this.#pixelWidth);
-          console.log(this.#pixelHeight);
 
           // Iterate through the map array and replace values with instances of Grass or Edge
           for (let y = 0; y < this.#height; y++) {
@@ -366,6 +357,8 @@ export class Map {
   draw(player, camera) {
     let ctx = camera.getCanvas();
 
+    let tileWidth = camera.getTileWidth()
+
     let playerX = player.getX();
     let playerY = player.getY();
 
@@ -385,12 +378,12 @@ export class Map {
         let x_index = xindex + i;
         let y_index = yindex + j;
 
-        let x_pos = x + i * TILE_WIDTH;
-        let y_pos = y + j * TILE_WIDTH;
+        let x_pos = x + i * tileWidth;
+        let y_pos = y + j * tileWidth;
 
         if (x_index < this.#width && y_index < this.#height) {
           let tile = this.#mapArray[y_index][x_index];
-          tile.draw(x_pos, y_pos, camera);
+          tile.draw(x_pos, y_pos, camera, tileWidth);
         }
       }
     }

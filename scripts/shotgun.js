@@ -3,7 +3,7 @@ import { Gun } from "./gun.js";
 export class Shotgun extends Gun {
   #duration;
 
-  constructor() {
+  constructor(camera) {
     super(
       60,
       "Shotgun",
@@ -18,7 +18,8 @@ export class Shotgun extends Gun {
       12,
       1,
       3,
-      1
+      1,
+      camera
     );
   }
 }

@@ -36,9 +36,9 @@ export class Tile {
   isInteractable() {
     return this.interactable;
   }
-  draw(x, y, camera) {
+  draw(x, y, camera, tileWidth) {
     let ctx = camera.getCanvas();
-    ctx.drawImage(this.sprite, x, y);
+    ctx.drawImage(this.sprite, x, y, tileWidth, tileWidth);
   }
   isWater() {
     return false;

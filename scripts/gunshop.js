@@ -49,6 +49,8 @@ export class GunShop extends Store {
       // Deduct the cost of the weapon from the player's points
       player.usePoints(costPoints);
 
+      this.inventory.camera = player.camera // Jank way of setting the camera because the camera doesnt exist yet when the gun was created within map
+
       // Equip the weapon purchased from the shop
       player.equipWeapon(this.inventory);
     }
@@ -62,11 +64,12 @@ export class GunShop extends Store {
     - y: Number representing the y-coordinate to draw the shop.
     - camera: Camera object representing the game camera.
   */
-  draw(x, y, camera) {
+  draw(x, y, camera, tileWidth) {
     let ctx = camera.getCanvas();
+    let scale = camera.getScale()
     
     // Draw the shop sprite
-    ctx.drawImage(this.sprite, x, y);
+    ctx.drawImage(this.sprite, x, y, tileWidth, tileWidth);
 
     // Draw the weapon inventory icon
     if (this.inventory != null) {

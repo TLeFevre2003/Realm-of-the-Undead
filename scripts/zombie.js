@@ -24,7 +24,8 @@ export class Zombie extends Entity {
     xbound_in,
     ybound_in,
     frames_in,
-    total_frames_in
+    total_frames_in,
+    camera
   ) {
     super(
       sprite_in,
@@ -34,7 +35,8 @@ export class Zombie extends Entity {
       x,
       y,
       xbound_in,
-      ybound_in
+      ybound_in,
+      camera
     );
     this.#damage = damage_in;
     this.#pathFindFrame = frames_in;
@@ -76,37 +78,53 @@ export class Zombie extends Entity {
       camera.getObjectScreenPositionY(playerY, zombY)
     );
 
+    const scale = camera.getScale()
+
     // Only draw if the zombie is visible on the canvas
     if (
-      screenPositionX <= 256 &&
-      screenPositionY <= 128 &&
-      screenPositionX >= -16 &&
-      screenPositionY >= -16
+      screenPositionX <= camera.getScreenWidth() &&
+      screenPositionY <= camera.getScreenHeight() &&
+      screenPositionX >= -16 * scale &&
+      screenPositionY >= -16 * scale
     ) {
-      ctx.drawImage(this.getSprite(), screenPositionX, screenPositionY);
+      const zombieSprite = this.getSprite();
+      
+
+      const zombieWidth = zombieSprite.width * scale;
+      const zombieHeight = zombieSprite.height * scale;
+
+      ctx.drawImage(this.getSprite(), screenPositionX, screenPositionY, zombieWidth, zombieHeight);
 
       // get zombie health
       let maxHealth = this.getMaxHealth();
       let health = this.getHealth();
       // draw only if zombie is damaged
+      // draw only if zombie is damaged
       if (health != maxHealth) {
-        // draw the black backround for the health bar
-        ctx.beginPath();
-        ctx.lineWidth = "1";
+        // Dimensions
+        const barWidth = 12 * scale;
+        const barHeight = 2 * scale;
+        const offsetX = 2 * scale;
+        const offsetY = -2 * scale;
+
+        // Calculate health percentage
+        const healthPercent = health / maxHealth;
+        const healthFillWidth = barWidth * healthPercent;
+
+        // Draw red background (missing health)
+        ctx.fillStyle = "red";
+        ctx.fillRect(screenPositionX + offsetX, screenPositionY + offsetY, barWidth, barHeight);
+
+        // Draw green foreground (current health)
+        ctx.fillStyle = "limegreen";
+        ctx.fillRect(screenPositionX + offsetX, screenPositionY + offsetY, healthFillWidth, barHeight);
+
+        // Draw border
         ctx.strokeStyle = "black";
-        ctx.rect(screenPositionX + 2, screenPositionY, 10, 0.5);
-        ctx.stroke();
-
-        // find the blue healthbar width
-        let healthPercent = health / maxHealth;
-        let healthWidth = 10 * healthPercent;
-
-        // draw blue health bar
-        ctx.beginPath();
-        ctx.strokeStyle = "blue";
-        ctx.rect(screenPositionX + 2, screenPositionY, healthWidth, 0.5);
-        ctx.stroke();
+        ctx.lineWidth = 1;
+        ctx.strokeRect(screenPositionX + offsetX, screenPositionY + offsetY, barWidth, barHeight);
       }
+
     }
   }
 

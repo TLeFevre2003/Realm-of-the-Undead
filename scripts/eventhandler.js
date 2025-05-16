@@ -84,8 +84,11 @@ export class EventHandler {
     const mouseX = (event.clientX - rect.left) * scaleX;
     const mouseY = (event.clientY - rect.top) * scaleY;
 
-    let x = game.getCamera().getPlayerScreenPositionX(game.player.getX())+8;
-    let y = game.getCamera().getPlayerScreenPositionY(game.player.getY())+8;
+    let camera = game.getCamera()
+    let scale = camera.getScale()
+
+    let x = camera.getPlayerScreenPositionX(game.player.getX()) + 8 * scale;
+    let y = camera.getPlayerScreenPositionY(game.player.getY()) + 8 * scale;
 
     let deltaX = mouseX - x;
     let deltaY = mouseY - y;
@@ -106,8 +109,11 @@ export class EventHandler {
     const mouseX = (event.clientX - rect.left) * scaleX;
     const mouseY = (event.clientY - rect.top) * scaleY;
 
-    let x = game.getCamera().getPlayerScreenPositionX(game.player.getX())+8;
-    let y = game.getCamera().getPlayerScreenPositionY(game.player.getY())+8;
+    let camera = game.getCamera()
+    let scale = camera.getScale()
+
+    let x = camera.getPlayerScreenPositionX(game.player.getX()) + 8 * scale;
+    let y = camera.getPlayerScreenPositionY(game.player.getY()) + 8 * scale;
 
     // let angle = Math.atan2(deltaY, deltaX);
 
