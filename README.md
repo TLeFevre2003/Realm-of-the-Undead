@@ -54,8 +54,6 @@ For a comprehensive insight into our implementation of JavaScript language synta
 - Add turrets you can mount your gun.
 - Cap upgrades at 3, but let the first one double your loaded ammo.
 - Make it only double ammo the first upgrade.
-- Make the canvas adapt to any screen size.
-- Make the canvas resolution scale to any resolution.
 - Add multiple levels that can be traveled to by elevator or stairs
 - New gun graphics and animations
 
