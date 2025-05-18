@@ -13,6 +13,7 @@ export class Game {
   #mapWidth;
   #mapHeight;
   #pathfindcache = {};
+  #paused = false
 
   constructor(map) {
     let gender = "m";
@@ -81,6 +82,12 @@ export class Game {
 
   // Gameloop, is called 120 times per second
   gameLoop() {
+
+    if (this.#paused)
+    {
+      return
+    }
+
     // When round is ended spawn new round
     if (this.#round.endRound()) {
       this.#round.spawnRound(
@@ -338,5 +345,10 @@ export class Game {
         });
       });
     });
+  }
+
+  togglePause()
+  {
+    this.#paused = !this.#paused
   }
 }

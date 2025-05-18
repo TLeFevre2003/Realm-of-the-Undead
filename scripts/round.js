@@ -4,7 +4,7 @@ export class Round {
   speedModifier = 1.05;
   countModifier = 1.2;
   damageModifier = 1.05;
-  healthModifier = 1.05;
+  healthModifier = 1.25;
   #camera;
 
 

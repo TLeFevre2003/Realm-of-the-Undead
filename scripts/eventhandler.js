@@ -11,12 +11,13 @@ export class EventHandler {
     this.mouseButton = null;
     this.interactKey = "f";
     this.movementSpeed = 1;
+    this.pauseKey = "p";
     this.movementInterval = null;
     this.controllerIndex = null;
   }
 
   // Handles when Keys are pressed
-  handleKeyDown(event, player, map) {
+  handleKeyDown(event, player, map, game) {
     let key = event.key;
     if (event.repeat) return; // If the key is being held down and repeating, ignore the event
 
@@ -44,6 +45,9 @@ export class EventHandler {
         break;
       case this.interactKey:
         player.interact(map);
+        break;
+      case this.pauseKey:
+        game.togglePause();
         break;
       default: // Handle unexpected keys
         console.log(`Unrecognized key pressed: ${key}`); // Optional logging

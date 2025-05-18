@@ -26,7 +26,7 @@ map.loadMap().then(() => {
   }, 8.333);
 
   document.addEventListener("keydown", (event) => {
-    eventHandler.handleKeyDown(event, gameInstance.player, map);
+    eventHandler.handleKeyDown(event, gameInstance.player, map, gameInstance);
   });
 
   document.addEventListener("keyup", (event) => {
