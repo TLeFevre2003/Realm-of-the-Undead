@@ -173,7 +173,9 @@ export class EventHandler {
         const dpadRight = gamepad.buttons[15].pressed; // D-Pad Right
         const homeButton = gamepad.buttons[16]?.pressed; // Home button (if present)
 
-        if (rightStickX != 0 || rightStickY != 0)
+        const stickDeadZone = .5;
+
+        if (Math.abs(rightStickX) > stickDeadZone || Math.abs(rightStickY) > stickDeadZone)
           {
             player.setDirection(rightStickX, rightStickY);
           }

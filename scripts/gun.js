@@ -1,4 +1,4 @@
-import { Bullet } from "./bullet.js";
+import { Bullet } from "./weapon.js";
 
 export class Gun {
   // --- Var ---

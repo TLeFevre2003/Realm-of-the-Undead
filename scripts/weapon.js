@@ -8,6 +8,7 @@ export class Bullet {
   alive = true;
   damage;
   camera;
+  radius = 1;
 
   constructor(duration_in, x, y, angle, damage, speed, camera) {
     this.#duration = duration_in;
@@ -29,7 +30,7 @@ export class Bullet {
 
   // returns the bullet radius
   getRadius() {
-    return 1;
+    return this.radius;
   }
 
   // Returns bullet x position
@@ -57,6 +58,7 @@ export class Bullet {
     this.posX += Math.cos(this.angle) * this.speed * this.camera.getScale();
     this.posY += Math.sin(this.angle) * this.speed * this.camera.getScale();
     this.time += 0.15;
+    // this.radius += 1
     if (this.time > this.#duration) {
       this.alive = false;
     }

@@ -2,6 +2,7 @@ import { Entity } from "./entity.js";
 import { Pistol } from "./pistol.js";
 import { Shotgun } from "./shotgun.js";
 import { Rifle } from "./rifle.js";
+import { Wand } from "./wand.js";
 
 export class Player extends Entity {
   #mouseY;
@@ -36,7 +37,7 @@ export class Player extends Entity {
       ybound_in,
       camera
     );
-    this.#gun1 = new Pistol(camera);
+    this.#gun1 = new Wand(camera);
     this.activegun = this.#gun1;
   }
 
@@ -204,6 +205,20 @@ export class Player extends Entity {
       -playerHeight / 2, // y offset
       playerWidth,       // scaled width
       playerHeight       // scaled height
+    );
+
+    let gunSprite = this.activegun.getSpriteLeft()
+
+    const gunWidth = gunSprite.width * scale / 4;
+    const gunHeight = gunSprite.height * scale / 4;
+
+    // Draw the gun image, and scaled
+    ctx.drawImage(
+      gunSprite,
+      (-playerWidth / 2) + gunWidth + (2 * scale), // x offset
+      (-playerHeight / 2) - (gunHeight) + 2 * scale, // y offset
+      gunWidth,       // scaled width
+      gunHeight       // scaled height
     );
     
     // Restore the context to its original state

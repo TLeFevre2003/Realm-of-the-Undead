@@ -54,8 +54,10 @@ For a comprehensive insight into our implementation of JavaScript language synta
 - Add turrets you can mount your gun.
 - Cap upgrades at 3, but let the first one double your loaded ammo.
 - Make it only double ammo the first upgrade.
-- Add multiple levels that can be traveled to by elevator or stairs
-- New gun graphics and animations
+- Add multiple levels that can be traveled to by elevator or stairs.
+- New gun graphics and animations.
+- Add a UI element to show when game is paused.
+- Add a little bit of deadzone for controller joysticks
 
 
 
