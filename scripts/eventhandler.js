@@ -246,6 +246,7 @@ export class EventHandler {
 
         if (startButton) {
           // Add functionality for Start button
+          game.togglePause()
         }
 
         if (leftStickButton) {
