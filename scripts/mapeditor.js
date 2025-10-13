@@ -13,11 +13,7 @@ import { Sniper } from "./sniper.js";
 import { Rifle } from "./rifle.js";
 import { Shotgun } from "./shotgun.js";
 
-class cam {
-  getCanvas() {
-    return document.querySelector("canvas").getContext("2d");
-  }
-}
+import { Camera } from "./camera.js";
 
 class mapEditor {
   #path = "./assets/newmap.txt";
@@ -328,8 +324,10 @@ class mapEditor {
   }
 
   drawMap() {
-    let ctx = document.querySelector("canvas").getContext("2d");
-    let camera = new cam();
+    let ctx = document.querySelector("#myCanvas").getContext("2d");
+
+    let camera = new Camera(this.#width, this.#height);
+
     ctx.clearRect(0, 0, 1000, 500);
 
     for (let i = 0; i < this.#width; i++) {
@@ -342,7 +340,7 @@ class mapEditor {
 
         if (x_index < this.#width && y_index < this.#height) {
           let tile = this.#mapArray[y_index][x_index];
-          tile.draw(x_pos, y_pos, camera);
+          tile.draw(x_pos, y_pos, camera, 32);
         }
       }
     }
@@ -660,7 +658,7 @@ map.loadMap().then(() => {
     map.handleKey(event);
   });
 
-  document.querySelector("#canvas").addEventListener("mousedown", (event) => {
+  document.querySelector("#myCanvas").addEventListener("mousedown", (event) => {
     if (event.button === 0) {
       // Your custom code for handling the left-click event
       map.click(event);
@@ -668,7 +666,7 @@ map.loadMap().then(() => {
   });
 
   document
-    .querySelector("#canvas")
+    .querySelector("#myCanvas")
     .addEventListener("contextmenu", function (event) {
       // Prevent the default right-click menu from appearing
       event.preventDefault();
