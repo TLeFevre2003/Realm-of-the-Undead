@@ -7,337 +7,147 @@ import { Tarp } from "./tarp.js";
 import { Water } from "./water.js";
 import { UpgradeBench } from "./upgradebench.js";
 import { Floor } from "./floor.js";
-
+import { Gun } from "./gun.js";
 import { GunShop } from "./gunshop.js";
-import { Sniper } from "./sniper.js";
-import { Rifle } from "./rifle.js";
-import { Shotgun } from "./shotgun.js";
 
 import { Camera } from "./camera.js";
 
 class mapEditor {
   #path = "./assets/newmap.txt";
   #mapArray = [];
+  #textMap;
   #width;
   #height;
-
-  // walls
-  #leftFence = new Wall("./assets/fence/fence_right.png");
-  #rightFence = new Wall("./assets/fence/fence_left.png");
-  #topFence = new Wall("./assets/fence/fence_bottom.png");
-  #bottomFence = new Wall("./assets/fence/fence_top.png");
-  #topRightFence = new Wall("./assets/fence/fence_corner_bottom_left.png");
-  #topLeftFence = new Wall("./assets/fence/fence_corner_bottom_right.png");
-  #bottomRightFence = new Wall("./assets/fence/fence_corner_top_left.png");
-  #bottomLeftFence = new Wall("./assets/fence/fence_corner_top_right.png");
-  #houseWall4Corners = new Wall("./assets/walls/houseWall_4_corner.png");
-  #houseWallBottomLeft = new Wall("./assets/walls/houseWall_corner_NE.png");
-  #houseWallBottomRight = new Wall("./assets/walls/houseWall_corner_NW.png");
-  #houseWallTopLeft = new Wall("./assets/walls/houseWall_corner_SE.png");
-  #houseWallTopRight = new Wall("./assets/walls/houseWall_corner_SW.png");
-  #houseWallHorizontal = new Wall("./assets/walls/houseWall_EW.png");
-  #houseWallVertical = new Wall("./assets/walls/houseWall_NS.png");
-  #houseWallDownT = new Wall("./assets/walls/houseWall_t_down.png");
-  #houseWallLeftT = new Wall("./assets/walls/houseWall_t_left.png");
-  #houseWallRightT = new Wall("./assets/walls/housewall_t_right.png");
-  #houseWallUpT = new Wall("./assets/walls/houseWall_t_up.png");
-  #stoneWall4Corners = new Wall("./assets/walls/stonewall_4_corner.png");
-  #stoneWallBottomLeft = new Wall("./assets/walls/stonewall_corner_NE.png");
-  #stoneWallBottomRight = new Wall("./assets/walls/stonewall_corner_NW.png");
-  #stoneWallTopLeft = new Wall("./assets/walls/stonewall_corner_SE.png");
-  #stoneWallTopRight = new Wall("./assets/walls/stonewall_corner_SW.png");
-  #stoneWallHorizontal = new Wall("./assets/walls/stonewall_EW.png");
-  #stoneWallVertical = new Wall("./assets/walls/stonewall_NS.png");
-  #stoneWallDownT = new Wall("./assets/walls/stonewall_t_down.png");
-  #stoneWallLeftT = new Wall("./assets/walls/stonewall_t_left.png");
-  #stoneWallRightT = new Wall("./assets/walls/stonewall_t_right.png");
-  #stoneWallUpT = new Wall("./assets/walls/stonewall_t_up.png");
-
-  #cabinWallBottomLeft = new Wall("./assets/walls/cabinWall_corner_NE.png");
-  #cabinWallBottomRight = new Wall("./assets/walls/cabinWall_corner_NW.png");
-  #cabinWallTopLeft = new Wall("./assets/walls/cabinWall_corner_SE.png");
-  #cabinWallTopRight = new Wall("./assets/walls/cabinWall_corner_SW.png");
-  #cabinWallHorizontal = new Wall("./assets/walls/cabinWall_EW.png");
-  #cabinWallVertical = new Wall("./assets/walls/cabinWall_NS.png");
-
-  // floors
-  #grass = new Floor("./assets/floors/green_grass.png");
-  #woodFloor = new Floor("./assets/floors/woodfloor.png");
-
-  #bridgeTop = new Floor("./assets/floors/bridgefloor_top.png");
-  #bridgeBottom = new Floor("./assets/floors/bridgefloor_bottom.png");
-
-  // Special Tiles
-  #ammo_crate = new AmmoCrate();
-  #health_crate = new HealthCrate();
-  #mystery_crate = new MysteryBox();
-
-  #bottom_left_tarp = new Tarp("./assets/tarp/tarp_bottom_left.png");
-  #bottom_right_tarp = new Tarp("./assets/tarp/tarp_bottom_right.png");
-  #top_left_tarp = new Tarp("./assets/tarp/tarp_top_left.png");
-  #top_right_tarp = new Tarp("./assets/tarp/tarp_top_right.png");
-
-  #water = new Water();
-  #pit = new Pit();
-  #upgradeBench = new UpgradeBench();
-
-  #rifleShop = new GunShop(
-    "./assets/floors/woodfloor.png",
-    1000,
-    new Rifle(),
-    "rifle"
-  );
-  #sniperShop = new GunShop(
-    "./assets/floors/woodfloor.png",
-    1250,
-    new Sniper(),
-    "sniper"
-  );
-  #shotgunShop = new GunShop(
-    "./assets/floors/green_grass.png",
-    1500,
-    new Shotgun(),
-    "shotgun"
-  );
-
-  #textMap;
-
-  #pathfindingMap = [];
-
   #tileX = 0;
   #tileY = 0;
 
-  #selectedTile = this.#leftFence;
-  #selectedChar = "3";
+  // All tile instances
+  #tiles = {};
 
-  // Loads the map from a text file
+  #selectedTile;
+  #selectedChar;
 
-  loadMap() {
-    return new Promise((resolve, reject) => {
-      fetch(this.#path)
-        .then((response) => response.text())
-        .then((data) => {
-          const rows = data.trim().split("\n");
-          this.#mapArray = rows.map((row) => row.split(","));
-          this.#textMap = rows.map((row) => row.split(","));
+  constructor() {
+    this.#tiles = {
+      // fences
+      3: new Wall("./assets/fence/fence_right.png"),
+      4: new Wall("./assets/fence/fence_left.png"),
+      5: new Wall("./assets/fence/fence_bottom.png"),
+      6: new Wall("./assets/fence/fence_top.png"),
+      7: new Wall("./assets/fence/fence_corner_bottom_left.png"),
+      8: new Wall("./assets/fence/fence_corner_bottom_right.png"),
+      9: new Wall("./assets/fence/fence_corner_top_left.png"),
+      0: new Wall("./assets/fence/fence_corner_top_right.png"),
 
-          console.log("Map Array:", this.#mapArray);
+      // house walls
+      "-": new Wall("./assets/walls/houseWall_4_corner.png"),
+      "=": new Wall("./assets/walls/houseWall_corner_NE.png"),
+      q: new Wall("./assets/walls/houseWall_corner_NW.png"),
+      w: new Wall("./assets/walls/houseWall_corner_SE.png"),
+      e: new Wall("./assets/walls/houseWall_corner_SW.png"),
+      r: new Wall("./assets/walls/houseWall_EW.png"),
+      t: new Wall("./assets/walls/houseWall_NS.png"),
+      y: new Wall("./assets/walls/houseWall_t_down.png"),
+      u: new Wall("./assets/walls/houseWall_t_left.png"),
+      i: new Wall("./assets/walls/housewall_t_right.png"),
+      o: new Wall("./assets/walls/houseWall_t_up.png"),
 
-          this.#height = this.#mapArray.length;
-          this.#width = this.#height > 0 ? this.#mapArray[0].length : 0;
-          console.log("Map Array:", this.#mapArray);
-          console.log("Width:", this.#width);
-          console.log("Height:", this.#height);
+      // stone walls
+      p: new Wall("./assets/walls/stonewall_4_corner.png"),
+      "[": new Wall("./assets/walls/stonewall_corner_NE.png"),
+      "]": new Wall("./assets/walls/stonewall_corner_NW.png"),
+      "\\": new Wall("./assets/walls/stonewall_corner_SE.png"),
+      a: new Wall("./assets/walls/stonewall_corner_SW.png"),
+      s: new Wall("./assets/walls/stonewall_EW.png"),
+      d: new Wall("./assets/walls/stonewall_NS.png"),
+      f: new Wall("./assets/walls/stonewall_t_down.png"),
+      g: new Wall("./assets/walls/stonewall_t_left.png"),
+      h: new Wall("./assets/walls/stonewall_t_right.png"),
+      j: new Wall("./assets/walls/stonewall_t_up.png"),
 
-          // Iterate through the map array and replace values with instances of Grass or Edge
-          for (let y = 0; y < this.#height; y++) {
-            for (let x = 0; x < this.#width; x++) {
-              const cellValue = this.#mapArray[y][x];
-              switch (cellValue) {
-                case "3":
-                  this.#mapArray[y][x] = this.#leftFence;
-                  break;
-                case "4":
-                  this.#mapArray[y][x] = this.#rightFence;
-                  break;
-                case "5":
-                  this.#mapArray[y][x] = this.#topFence;
-                  break;
-                case "6":
-                  this.#mapArray[y][x] = this.#bottomFence;
-                  break;
-                case "7":
-                  this.#mapArray[y][x] = this.#topRightFence;
-                  break;
-                case "8":
-                  this.#mapArray[y][x] = this.#topLeftFence;
-                  break;
-                case "9":
-                  this.#mapArray[y][x] = this.#bottomRightFence;
-                  break;
-                case "0":
-                  this.#mapArray[y][x] = this.#bottomLeftFence;
-                  break;
-                case "-":
-                  this.#mapArray[y][x] = this.#houseWall4Corners;
-                  break;
-                case "=":
-                  this.#mapArray[y][x] = this.#houseWallBottomLeft;
-                  break;
-                case "q":
-                  this.#mapArray[y][x] = this.#houseWallBottomRight;
-                  break;
-                case "w":
-                  this.#mapArray[y][x] = this.#houseWallTopLeft;
-                  break;
-                case "e":
-                  this.#mapArray[y][x] = this.#houseWallTopRight;
-                  break;
-                case "r":
-                  this.#mapArray[y][x] = this.#houseWallHorizontal;
-                  break;
-                case "t":
-                  this.#mapArray[y][x] = this.#houseWallVertical;
-                  break;
-                case "y":
-                  this.#mapArray[y][x] = this.#houseWallDownT;
-                  break;
-                case "u":
-                  this.#mapArray[y][x] = this.#houseWallLeftT;
-                  break;
-                case "i":
-                  this.#mapArray[y][x] = this.#houseWallRightT;
-                  break;
-                case "o":
-                  this.#mapArray[y][x] = this.#houseWallUpT;
-                  break;
-                case "p":
-                  this.#mapArray[y][x] = this.#stoneWall4Corners;
-                  break;
-                case "[":
-                  this.#mapArray[y][x] = this.#stoneWallBottomLeft;
-                  break;
-                case "]":
-                  this.#mapArray[y][x] = this.#stoneWallBottomRight;
-                  break;
-                case "\\":
-                  this.#mapArray[y][x] = this.#stoneWallTopLeft;
-                  break;
-                case "a":
-                  this.#mapArray[y][x] = this.#stoneWallTopRight;
-                  break;
-                case "s":
-                  this.#mapArray[y][x] = this.#stoneWallHorizontal;
-                  break;
-                case "d":
-                  this.#mapArray[y][x] = this.#stoneWallVertical;
-                  break;
-                case "f":
-                  this.#mapArray[y][x] = this.#stoneWallDownT;
-                  break;
-                case "g":
-                  this.#mapArray[y][x] = this.#stoneWallLeftT;
-                  break;
-                case "h":
-                  this.#mapArray[y][x] = this.#stoneWallRightT;
-                  break;
-                case "j":
-                  this.#mapArray[y][x] = this.#stoneWallUpT;
-                  break;
-                case "l":
-                  this.#mapArray[y][x] = this.#grass;
-                  break;
-                case ";":
-                  this.#mapArray[y][x] = this.#woodFloor;
-                  break;
-                case "W":
-                  this.#mapArray[y][x] = this.#water;
-                  break;
-                case "P":
-                  this.#mapArray[y][x] = this.#pit;
-                  break;
-                case "A":
-                  this.#mapArray[y][x] = this.#ammo_crate;
-                  break;
-                case "H":
-                  this.#mapArray[y][x] = this.#health_crate;
-                  break;
-                case "M":
-                  this.#mapArray[y][x] = this.#mystery_crate;
-                  break;
-                case "U":
-                  this.#mapArray[y][x] = this.#upgradeBench;
-                  break;
-                case "z":
-                  this.#mapArray[y][x] = this.#top_right_tarp;
-                  break;
-                case "`":
-                  this.#mapArray[y][x] = this.#top_left_tarp;
-                  break;
-                case "1":
-                  this.#mapArray[y][x] = this.#bottom_right_tarp;
-                  break;
-                case "2":
-                  this.#mapArray[y][x] = this.#bottom_left_tarp;
-                  break;
-                case "x":
-                  this.#mapArray[y][x] = this.#cabinWallBottomLeft;
-                  break;
-                case "c":
-                  this.#mapArray[y][x] = this.#cabinWallBottomRight;
-                  break;
-                case "v":
-                  this.#mapArray[y][x] = this.#cabinWallTopLeft;
-                  break;
-                case "b":
-                  this.#mapArray[y][x] = this.#cabinWallTopRight;
-                  break;
-                case "n":
-                  this.#mapArray[y][x] = this.#cabinWallHorizontal;
-                  break;
-                case "m":
-                  this.#mapArray[y][x] = this.#cabinWallVertical;
-                  break;
-                case ".":
-                  this.#mapArray[y][x] = this.#bridgeTop;
-                  break;
-                case "/":
-                  this.#mapArray[y][x] = this.#bridgeBottom;
-                  break;
-                case "S":
-                  this.#mapArray[y][x] = this.#sniperShop;
-                  break;
-                case "R":
-                  this.#mapArray[y][x] = this.#rifleShop;
-                  break;
-                case "G":
-                  this.#mapArray[y][x] = this.#shotgunShop;
-                  break;
-                default:
-                  // Handle default case if needed
-                  break;
-              }
-            }
-          }
+      // cabin walls
+      x: new Wall("./assets/walls/cabinWall_corner_NE.png"),
+      c: new Wall("./assets/walls/cabinWall_corner_NW.png"),
+      v: new Wall("./assets/walls/cabinWall_corner_SE.png"),
+      b: new Wall("./assets/walls/cabinWall_corner_SW.png"),
+      n: new Wall("./assets/walls/cabinWall_EW.png"),
+      m: new Wall("./assets/walls/cabinWall_NS.png"),
 
-          console.log("Map Array After Replacement:", this.#mapArray); // Check the map array after replacements
-          resolve(); // Resolve the promise once the map is loaded
-        })
-        .catch((error) => {
-          console.error("Error reading the map file:", error);
-          reject(error); // Reject the promise if there's an error
-        });
-    });
+      // floors
+      l: new Floor("./assets/floors/green_grass.png"),
+      ";": new Floor("./assets/floors/woodfloor.png"),
+      ".": new Floor("./assets/floors/bridgefloor_top.png"),
+      "/": new Floor("./assets/floors/bridgefloor_bottom.png"),
+
+      // special
+      W: new Water(),
+      P: new Pit(),
+      A: new AmmoCrate(),
+      H: new HealthCrate(),
+      M: new MysteryBox(),
+      U: new UpgradeBench(),
+
+      // tarps
+      z: new Tarp("./assets/tarp/tarp_top_right.png"),
+      "`": new Tarp("./assets/tarp/tarp_top_left.png"),
+      1: new Tarp("./assets/tarp/tarp_bottom_right.png"),
+      2: new Tarp("./assets/tarp/tarp_bottom_left.png"),
+
+      // gun shops
+      R: new GunShop(
+        "./assets/floors/woodfloor.png",
+        1000,
+        new Gun("test"),
+        "rifle"
+      ),
+      S: new GunShop(
+        "./assets/floors/woodfloor.png",
+        1250,
+        new Gun("test"),
+        "sniper"
+      ),
+      G: new GunShop(
+        "./assets/floors/green_grass.png",
+        1500,
+        new Gun("test"),
+        "shotgun"
+      ),
+    };
+
+    this.#selectedChar = "3";
+    this.#selectedTile = this.#tiles["3"];
   }
 
-  writeMap() {
-    const rows = this.#textMap.map((row) => row.join(",")).join("\n");
-    const blob = new Blob([rows], { type: "text/plain" });
+  async loadMap() {
+    try {
+      const response = await fetch(this.#path);
+      const text = await response.text();
+      const rows = text.trim().split("\n");
+      this.#textMap = rows.map((r) => r.split(","));
+      this.#height = this.#textMap.length;
+      this.#width = this.#textMap[0].length;
 
-    // Save the blob to a file
-    const link = document.createElement("a");
-    link.href = URL.createObjectURL(blob);
-    link.download = "output.txt"; // Set the filename as needed
-    link.click();
+      // Replace characters with tiles
+      this.#mapArray = this.#textMap.map((row) =>
+        row.map((char) => this.#tiles[char] || this.#tiles["l"])
+      );
 
-    URL.revokeObjectURL(link.href);
+      console.log("Map loaded:", this.#mapArray);
+    } catch (error) {
+      console.error("Error loading map:", error);
+    }
   }
 
   drawMap() {
     let ctx = document.querySelector("#myCanvas").getContext("2d");
-
     let camera = new Camera(this.#width, this.#height);
-
     ctx.clearRect(0, 0, 1000, 500);
-
     for (let i = 0; i < this.#width; i++) {
       for (let j = 0; j < this.#height; j++) {
         let x_index = this.#tileX + i;
         let y_index = this.#tileY + j;
-
         let x_pos = (x_index - this.#tileX) * 32;
         let y_pos = (y_index - this.#tileY) * 32;
-
         if (x_index < this.#width && y_index < this.#height) {
           let tile = this.#mapArray[y_index][x_index];
           tile.draw(x_pos, y_pos, camera, 32);
@@ -347,241 +157,20 @@ class mapEditor {
   }
 
   handleKey(event) {
-    let key = event.key;
-    if (event.repeat) return; // If the key is being held down and repeating, ignore the event
+    const key = event.key;
+    if (event.repeat) return;
 
-    switch (key) {
-      case "ArrowUp":
-        if (this.#tileY != 0) {
-          this.#tileY -= 1;
-        }
-        break;
+    // movement
+    if (key === "ArrowUp" && this.#tileY > 0) this.#tileY--;
+    else if (key === "ArrowDown") this.#tileY++;
+    else if (key === "ArrowLeft" && this.#tileX > 0) this.#tileX--;
+    else if (key === "ArrowRight") this.#tileX++;
 
-      case "ArrowLeft":
-        if (this.#tileX != 0) {
-          this.#tileX -= 1;
-        }
-        break;
-
-      case "ArrowDown":
-        this.#tileY += 1;
-        break;
-
-      case "ArrowRight":
-        this.#tileX += 1;
-        break;
-      case "3":
-        this.#selectedTile = this.#leftFence;
-        this.#selectedChar = "3";
-        break;
-      case "4":
-        this.#selectedTile = this.#rightFence;
-        this.#selectedChar = "4";
-        break;
-      case "5":
-        this.#selectedTile = this.#topFence;
-        this.#selectedChar = "5";
-        break;
-      case "6":
-        this.#selectedTile = this.#bottomFence;
-        this.#selectedChar = "6";
-        break;
-      case "7":
-        this.#selectedTile = this.#topRightFence;
-        this.#selectedChar = "7";
-        break;
-      case "8":
-        this.#selectedTile = this.#topLeftFence;
-        this.#selectedChar = "8";
-        break;
-      case "9":
-        this.#selectedTile = this.#bottomRightFence;
-        this.#selectedChar = "9";
-        break;
-      case "0":
-        this.#selectedTile = this.#bottomLeftFence;
-        this.#selectedChar = "0";
-        break;
-      case "-":
-        this.#selectedTile = this.#houseWall4Corners;
-        this.#selectedChar = "-";
-        break;
-      case "=":
-        this.#selectedTile = this.#houseWallBottomLeft;
-        this.#selectedChar = "=";
-        break;
-      case "q":
-        this.#selectedTile = this.#houseWallBottomRight;
-        this.#selectedChar = "q";
-        break;
-      case "w":
-        this.#selectedTile = this.#houseWallTopLeft;
-        this.#selectedChar = "w";
-        break;
-      case "e":
-        this.#selectedTile = this.#houseWallTopRight;
-        this.#selectedChar = "e";
-        break;
-      case "r":
-        this.#selectedTile = this.#houseWallHorizontal;
-        this.#selectedChar = "r";
-        break;
-      case "t":
-        this.#selectedTile = this.#houseWallVertical;
-        this.#selectedChar = "t";
-        break;
-      case "y":
-        this.#selectedTile = this.#houseWallDownT;
-        this.#selectedChar = "y";
-        break;
-      case "u":
-        this.#selectedTile = this.#houseWallLeftT;
-        this.#selectedChar = "u";
-        break;
-      case "i":
-        this.#selectedTile = this.#houseWallRightT;
-        this.#selectedChar = "i";
-        break;
-      case "o":
-        this.#selectedTile = this.#houseWallUpT;
-        this.#selectedChar = "o";
-        break;
-      case "p":
-        this.#selectedTile = this.#stoneWall4Corners;
-        this.#selectedChar = "p";
-        break;
-      case "[":
-        this.#selectedTile = this.#stoneWallBottomLeft;
-        this.#selectedChar = "[";
-        break;
-      case "]":
-        this.#selectedTile = this.#stoneWallBottomRight;
-        this.#selectedChar = "]";
-        break;
-      case "\\":
-        this.#selectedTile = this.#stoneWallTopLeft;
-        this.#selectedChar = "\\";
-        break;
-      case "a":
-        this.#selectedTile = this.#stoneWallTopRight;
-        this.#selectedChar = "a";
-        break;
-      case "s":
-        this.#selectedTile = this.#stoneWallHorizontal;
-        this.#selectedChar = "s";
-        break;
-      case "d":
-        this.#selectedTile = this.#stoneWallVertical;
-        this.#selectedChar = "d";
-        break;
-      case "f":
-        this.#selectedTile = this.#stoneWallDownT;
-        this.#selectedChar = "f";
-        break;
-      case "g":
-        this.#selectedTile = this.#stoneWallLeftT;
-        this.#selectedChar = "g";
-        break;
-      case "h":
-        this.#selectedTile = this.#stoneWallRightT;
-        this.#selectedChar = "h";
-        break;
-      case "j":
-        this.#selectedTile = this.#stoneWallUpT;
-        this.#selectedChar = "j";
-        break;
-      case "l":
-        this.#selectedTile = this.#grass;
-        this.#selectedChar = "l";
-        break;
-      case ";":
-        this.#selectedTile = this.#woodFloor;
-        this.#selectedChar = ";";
-        break;
-      case "W":
-        this.#selectedTile = this.#water;
-        this.#selectedChar = "W";
-        break;
-      case "P":
-        this.#selectedTile = this.#pit;
-        this.#selectedChar = "P";
-        break;
-      case "A":
-        this.#selectedTile = this.#ammo_crate;
-        this.#selectedChar = "A";
-        break;
-      case "H":
-        this.#selectedTile = this.#health_crate;
-        this.#selectedChar = "H";
-        break;
-      case "M":
-        this.#selectedTile = this.#mystery_crate;
-        this.#selectedChar = "M";
-        break;
-      case "U":
-        this.#selectedTile = this.#upgradeBench;
-        this.#selectedChar = "U";
-        break;
-      case "z":
-        this.#selectedTile = this.#top_right_tarp;
-        this.#selectedChar = "z";
-        break;
-      case "`":
-        this.#selectedTile = this.#top_left_tarp;
-        this.#selectedChar = "`";
-        break;
-      case "1":
-        this.#selectedTile = this.#bottom_right_tarp;
-        this.#selectedChar = "1";
-        break;
-      case "2":
-        this.#selectedTile = this.#bottom_left_tarp;
-        this.#selectedChar = "2";
-        break;
-      case "x":
-        this.#selectedTile = this.#cabinWallBottomLeft;
-        this.#selectedChar = "x";
-        break;
-      case "c":
-        this.#selectedTile = this.#cabinWallBottomRight;
-        this.#selectedChar = "c";
-        break;
-      case "v":
-        this.#selectedTile = this.#cabinWallTopLeft;
-        this.#selectedChar = "v";
-        break;
-      case "b":
-        this.#selectedTile = this.#cabinWallTopRight;
-        this.#selectedChar = "b";
-        break;
-      case "n":
-        this.#selectedTile = this.#cabinWallHorizontal;
-        this.#selectedChar = "n";
-        break;
-      case "m":
-        this.#selectedTile = this.#cabinWallVertical;
-        this.#selectedChar = "m";
-        break;
-      case ".":
-        this.#selectedTile = this.#bridgeTop;
-        this.#selectedChar = ".";
-        break;
-      case "/":
-        this.#selectedTile = this.#bridgeBottom;
-        this.#selectedChar = "/";
-        break;
-      case "S":
-        this.#selectedTile = this.#sniperShop;
-        this.#selectedChar = "S";
-        break;
-      case "R":
-        this.#selectedTile = this.#rifleShop;
-        this.#selectedChar = "R";
-        break;
-      case "G":
-        this.#selectedTile = this.#shotgunShop;
-        this.#selectedChar = "G";
-        break;
+    // tile selection via dictionary
+    if (this.#tiles[key]) {
+      this.#selectedTile = this.#tiles[key];
+      this.#selectedChar = key;
+      console.log("Selected tile:", key);
     }
 
     this.drawMap();
@@ -611,6 +200,7 @@ class mapEditor {
     console.log(this.#textMap);
     console.log(this.#selectedChar);
   }
+
   rightClickTileSelect(event) {
     // sets the canvas to rect
     const rect = event.target.getBoundingClientRect();
