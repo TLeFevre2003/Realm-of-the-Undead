@@ -218,24 +218,26 @@ export class Player extends Entity {
 
     // GUN DRAWING (after ctx.rotate(angle))
 
-    // Get gun sprite
-    const gunSprite = this.activegun.getSpriteLeft();
-    const gunWidth = gunSprite.width * scale * 0.3;
-    const gunHeight = gunSprite.height * scale * 0.3;
+    if (this.activegun != null) {
+      // Get gun sprite
+      const gunSprite = this.activegun.getSpriteLeft();
+      const gunWidth = gunSprite.width * scale * 0.3;
+      const gunHeight = gunSprite.height * scale * 0.3;
 
-    // Position offset from player center (relative coordinates)
-    // For "top middle" of the player:
-    const offsetX = 0;
-    const offsetY = -playerHeight / 2 - gunHeight / 2 + 13;
+      // Position offset from player center (relative coordinates)
+      // For "top middle" of the player:
+      const offsetX = 0;
+      const offsetY = -playerHeight / 2 - gunHeight / 2 + 13;
 
-    // Draw gun relative to rotated context
-    ctx.drawImage(
-      gunSprite,
-      offsetX - gunWidth / 2, // center gun horizontally
-      offsetY - gunHeight / 2, // move to top middle
-      gunWidth,
-      gunHeight
-    );
+      // Draw gun relative to rotated context
+      ctx.drawImage(
+        gunSprite,
+        offsetX - gunWidth / 2, // center gun horizontally
+        offsetY - gunHeight / 2, // move to top middle
+        gunWidth,
+        gunHeight
+      );
+    }
 
     // Restore the context to its original state
     ctx.restore();
