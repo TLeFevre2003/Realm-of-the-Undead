@@ -38,7 +38,7 @@ export class Player extends Entity {
       camera
     );
     console.log("Creating gun");
-    this.#gun1 = new Gun("test", this.camera);
+    this.#gun1 = new Gun("spread", this.camera);
     console.log("Created Gun");
     console.log("Test new gun");
     console.log("Bullet count: " + this.#gun1.getBulletCount());
