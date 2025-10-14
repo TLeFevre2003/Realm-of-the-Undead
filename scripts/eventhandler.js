@@ -88,8 +88,8 @@ export class EventHandler {
     const mouseX = (event.clientX - rect.left) * scaleX;
     const mouseY = (event.clientY - rect.top) * scaleY;
 
-    let camera = game.getCamera()
-    let scale = camera.getScale()
+    let camera = game.getCamera();
+    let scale = camera.getScale();
 
     let x = camera.getPlayerScreenPositionX(game.player.getX()) + 8 * scale;
     let y = camera.getPlayerScreenPositionY(game.player.getY()) + 8 * scale;
@@ -113,8 +113,8 @@ export class EventHandler {
     const mouseX = (event.clientX - rect.left) * scaleX;
     const mouseY = (event.clientY - rect.top) * scaleY;
 
-    let camera = game.getCamera()
-    let scale = camera.getScale()
+    let camera = game.getCamera();
+    let scale = camera.getScale();
 
     let x = camera.getPlayerScreenPositionX(game.player.getX()) + 8 * scale;
     let y = camera.getPlayerScreenPositionY(game.player.getY()) + 8 * scale;
@@ -132,7 +132,9 @@ export class EventHandler {
   // Handle controller connection
   handleGamepadConnected(event) {
     this.controllerIndex = event.gamepad.index;
-    console.log(`Gamepad connected at index ${this.controllerIndex}: ${event.gamepad.id}`);
+    console.log(
+      `Gamepad connected at index ${this.controllerIndex}: ${event.gamepad.id}`
+    );
   }
 
   // Handle controller disconnection
@@ -140,7 +142,9 @@ export class EventHandler {
     if (this.controllerIndex === event.gamepad.index) {
       this.controllerIndex = null;
     }
-    console.log(`Gamepad disconnected from index ${event.gamepad.index}: ${event.gamepad.id}`);
+    console.log(
+      `Gamepad disconnected from index ${event.gamepad.index}: ${event.gamepad.id}`
+    );
   }
 
   // Update controller input
@@ -173,10 +177,9 @@ export class EventHandler {
         const dpadRight = gamepad.buttons[15].pressed; // D-Pad Right
         const homeButton = gamepad.buttons[16]?.pressed; // Home button (if present)
 
-        if (rightStickX != 0 || rightStickY != 0)
-          {
-            player.setDirection(rightStickX, rightStickY);
-          }
+        if (Math.abs(rightStickX) > 0.5 || Math.abs(rightStickY) > 0.5) {
+          player.setDirection(rightStickX, rightStickY);
+        }
 
         // Movement using D-Pad or left stick
         if (dpadUp || leftStickY < -0.5) {
@@ -204,19 +207,23 @@ export class EventHandler {
         }
 
         // Actions
-        if (buttonY) { // Reload (Triangle/Y)
+        if (buttonY) {
+          // Reload (Triangle/Y)
           player.reload();
         }
 
-        if (leftBumper) { // Switch to gun 1 (L1/LB)
+        if (leftBumper) {
+          // Switch to gun 1 (L1/LB)
           player.switchActiveGun(1);
         }
 
-        if (rightBumper) { // Switch to gun 2 (R1/RB)
+        if (rightBumper) {
+          // Switch to gun 2 (R1/RB)
           player.switchActiveGun(2);
         }
 
-        if (buttonA) { // Interact (Cross/A)
+        if (buttonA) {
+          // Interact (Cross/A)
           player.interact(map);
         }
 
@@ -246,7 +253,7 @@ export class EventHandler {
 
         if (startButton) {
           // Add functionality for Start button
-          game.togglePause()
+          game.togglePause();
         }
 
         if (leftStickButton) {

@@ -1,0 +1,85 @@
+{
+  "tiles": [
+    { "key": "l", "type": "Floor", "image": "./assets/floors/green_grass.png" },
+    { "key": ";", "type": "Floor", "image": "./assets/floors/woodfloor.png" },
+    { "key": ".", "type": "Floor", "image": "./assets/floors/bridgefloor_top.png" },
+    { "key": "/", "type": "Floor", "image": "./assets/floors/bridgefloor_bottom.png" },
+
+    { "key": "3", "type": "Wall", "image": "./assets/fence/fence_right.png" },
+    { "key": "4", "type": "Wall", "image": "./assets/fence/fence_left.png" },
+    { "key": "5", "type": "Wall", "image": "./assets/fence/fence_bottom.png" },
+    { "key": "6", "type": "Wall", "image": "./assets/fence/fence_top.png" },
+    { "key": "7", "type": "Wall", "image": "./assets/fence/fence_corner_bottom_left.png" },
+    { "key": "8", "type": "Wall", "image": "./assets/fence/fence_corner_bottom_right.png" },
+    { "key": "9", "type": "Wall", "image": "./assets/fence/fence_corner_top_left.png" },
+    { "key": "0", "type": "Wall", "image": "./assets/fence/fence_corner_top_right.png" },
+
+    { "key": "-", "type": "Wall", "image": "./assets/walls/houseWall_4_corner.png" },
+    { "key": "=", "type": "Wall", "image": "./assets/walls/houseWall_corner_NE.png" },
+    { "key": "q", "type": "Wall", "image": "./assets/walls/houseWall_corner_NW.png" },
+    { "key": "w", "type": "Wall", "image": "./assets/walls/houseWall_corner_SE.png" },
+    { "key": "e", "type": "Wall", "image": "./assets/walls/houseWall_corner_SW.png" },
+    { "key": "r", "type": "Wall", "image": "./assets/walls/houseWall_EW.png" },
+    { "key": "t", "type": "Wall", "image": "./assets/walls/houseWall_NS.png" },
+    { "key": "y", "type": "Wall", "image": "./assets/walls/houseWall_t_down.png" },
+    { "key": "u", "type": "Wall", "image": "./assets/walls/houseWall_t_left.png" },
+    { "key": "i", "type": "Wall", "image": "./assets/walls/housewall_t_right.png" },
+    { "key": "o", "type": "Wall", "image": "./assets/walls/houseWall_t_up.png" },
+
+    { "key": "p", "type": "Wall", "image": "./assets/walls/stonewall_4_corner.png" },
+    { "key": "[", "type": "Wall", "image": "./assets/walls/stonewall_corner_NE.png" },
+    { "key": "]", "type": "Wall", "image": "./assets/walls/stonewall_corner_NW.png" },
+    { "key": "\\", "type": "Wall", "image": "./assets/walls/stonewall_corner_SE.png" },
+    { "key": "a", "type": "Wall", "image": "./assets/walls/stonewall_corner_SW.png" },
+    { "key": "s", "type": "Wall", "image": "./assets/walls/stonewall_EW.png" },
+    { "key": "d", "type": "Wall", "image": "./assets/walls/stonewall_NS.png" },
+    { "key": "f", "type": "Wall", "image": "./assets/walls/stonewall_t_down.png" },
+    { "key": "g", "type": "Wall", "image": "./assets/walls/stonewall_t_left.png" },
+    { "key": "h", "type": "Wall", "image": "./assets/walls/stonewall_t_right.png" },
+    { "key": "j", "type": "Wall", "image": "./assets/walls/stonewall_t_up.png" },
+
+    { "key": "x", "type": "Wall", "image": "./assets/walls/cabinWall_corner_NE.png" },
+    { "key": "c", "type": "Wall", "image": "./assets/walls/cabinWall_corner_NW.png" },
+    { "key": "v", "type": "Wall", "image": "./assets/walls/cabinWall_corner_SE.png" },
+    { "key": "b", "type": "Wall", "image": "./assets/walls/cabinWall_corner_SW.png" },
+    { "key": "n", "type": "Wall", "image": "./assets/walls/cabinWall_EW.png" },
+    { "key": "m", "type": "Wall", "image": "./assets/walls/cabinWall_NS.png" },
+
+    { "key": "z", "type": "Tarp", "image": "./assets/tarp/tarp_top_right.png" },
+    { "key": "`", "type": "Tarp", "image": "./assets/tarp/tarp_top_left.png" },
+    { "key": "1", "type": "Tarp", "image": "./assets/tarp/tarp_bottom_right.png" },
+    { "key": "2", "type": "Tarp", "image": "./assets/tarp/tarp_bottom_left.png" },
+
+    { "key": "W", "type": "Water" },
+    { "key": "P", "type": "Pit" },
+    { "key": "A", "type": "AmmoCrate" },
+    { "key": "H", "type": "HealthCrate" },
+    { "key": "M", "type": "MysteryBox" },
+    { "key": "U", "type": "UpgradeBench" },
+
+    {
+      "key": "R",
+      "type": "GunShop",
+      "image": "./assets/floors/woodfloor.png",
+      "price": 1000,
+      "gun": "test",
+      "gunType": "rifle"
+    },
+    {
+      "key": "S",
+      "type": "GunShop",
+      "image": "./assets/floors/woodfloor.png",
+      "price": 1250,
+      "gun": "test",
+      "gunType": "sniper"
+    },
+    {
+      "key": "G",
+      "type": "GunShop",
+      "image": "./assets/floors/green_grass.png",
+      "price": 1500,
+      "gun": "test",
+      "gunType": "shotgun"
+    }
+  ]
+}

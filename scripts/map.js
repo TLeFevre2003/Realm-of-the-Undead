@@ -8,9 +8,6 @@ import { Water } from "./water.js";
 import { UpgradeBench } from "./upgradebench.js";
 import { Floor } from "./floor.js";
 import { GunShop } from "./gunshop.js";
-import { Sniper } from "./sniper.js";
-import { Rifle } from "./rifle.js";
-import { Shotgun } from "./shotgun.js";
 import { Gun } from "./gun.js";
 
 export class Map {
@@ -18,103 +15,74 @@ export class Map {
   #mapArray = [];
   #width;
   #height;
-  #pixelWidth;
-  #pixelHeight;
-  // All tile instances
   #tiles = {};
-
   #pathfindingMap = [];
 
   constructor() {
-    this.#tiles = {
-      // fences
-      3: new Wall("./assets/fence/fence_right.png"),
-      4: new Wall("./assets/fence/fence_left.png"),
-      5: new Wall("./assets/fence/fence_bottom.png"),
-      6: new Wall("./assets/fence/fence_top.png"),
-      7: new Wall("./assets/fence/fence_corner_bottom_left.png"),
-      8: new Wall("./assets/fence/fence_corner_bottom_right.png"),
-      9: new Wall("./assets/fence/fence_corner_top_left.png"),
-      0: new Wall("./assets/fence/fence_corner_top_right.png"),
+    // Constructor no longer manually defines tiles
+  }
 
-      // house walls
-      "-": new Wall("./assets/walls/houseWall_4_corner.png"),
-      "=": new Wall("./assets/walls/houseWall_corner_NE.png"),
-      q: new Wall("./assets/walls/houseWall_corner_NW.png"),
-      w: new Wall("./assets/walls/houseWall_corner_SE.png"),
-      e: new Wall("./assets/walls/houseWall_corner_SW.png"),
-      r: new Wall("./assets/walls/houseWall_EW.png"),
-      t: new Wall("./assets/walls/houseWall_NS.png"),
-      y: new Wall("./assets/walls/houseWall_t_down.png"),
-      u: new Wall("./assets/walls/houseWall_t_left.png"),
-      i: new Wall("./assets/walls/housewall_t_right.png"),
-      o: new Wall("./assets/walls/houseWall_t_up.png"),
+  // Load tiles from JSON
+  async loadTiles(jsonPath = "./configs/tiletypes.json") {
+    try {
+      const response = await fetch(jsonPath);
+      const data = await response.json();
 
-      // stone walls
-      p: new Wall("./assets/walls/stonewall_4_corner.png"),
-      "[": new Wall("./assets/walls/stonewall_corner_NE.png"),
-      "]": new Wall("./assets/walls/stonewall_corner_NW.png"),
-      "\\": new Wall("./assets/walls/stonewall_corner_SE.png"),
-      a: new Wall("./assets/walls/stonewall_corner_SW.png"),
-      s: new Wall("./assets/walls/stonewall_EW.png"),
-      d: new Wall("./assets/walls/stonewall_NS.png"),
-      f: new Wall("./assets/walls/stonewall_t_down.png"),
-      g: new Wall("./assets/walls/stonewall_t_left.png"),
-      h: new Wall("./assets/walls/stonewall_t_right.png"),
-      j: new Wall("./assets/walls/stonewall_t_up.png"),
+      data.tiles.forEach((tileDef) => {
+        const key = tileDef.key;
+        const type = tileDef.type;
+        const img = tileDef.image;
+        const price = tileDef.price;
+        const gun = tileDef.gun;
+        const gunType = tileDef.gunType;
 
-      // cabin walls
-      x: new Wall("./assets/walls/cabinWall_corner_NE.png"),
-      c: new Wall("./assets/walls/cabinWall_corner_NW.png"),
-      v: new Wall("./assets/walls/cabinWall_corner_SE.png"),
-      b: new Wall("./assets/walls/cabinWall_corner_SW.png"),
-      n: new Wall("./assets/walls/cabinWall_EW.png"),
-      m: new Wall("./assets/walls/cabinWall_NS.png"),
+        switch (type) {
+          case "Wall":
+          case "CabinWall":
+            this.#tiles[key] = new Wall(img);
+            break;
+          case "Floor":
+            this.#tiles[key] = new Floor(img);
+            break;
+          case "Water":
+            this.#tiles[key] = new Water();
+            break;
+          case "Pit":
+            this.#tiles[key] = new Pit();
+            break;
+          case "AmmoCrate":
+            this.#tiles[key] = new AmmoCrate();
+            break;
+          case "HealthCrate":
+            this.#tiles[key] = new HealthCrate();
+            break;
+          case "MysteryBox":
+            this.#tiles[key] = new MysteryBox();
+            break;
+          case "UpgradeBench":
+            this.#tiles[key] = new UpgradeBench();
+            break;
+          case "Tarp":
+            this.#tiles[key] = new Tarp(img);
+            break;
+          case "GunShop":
+            this.#tiles[key] = new GunShop(img, price, new Gun(gun), gunType);
+            break;
+          default:
+            console.warn(`Unknown tile type: ${type}`);
+        }
+      });
 
-      // floors
-      l: new Floor("./assets/floors/green_grass.png"),
-      ";": new Floor("./assets/floors/woodfloor.png"),
-      ".": new Floor("./assets/floors/bridgefloor_top.png"),
-      "/": new Floor("./assets/floors/bridgefloor_bottom.png"),
-
-      // special
-      W: new Water(),
-      P: new Pit(),
-      A: new AmmoCrate(),
-      H: new HealthCrate(),
-      M: new MysteryBox(),
-      U: new UpgradeBench(),
-
-      // tarps
-      z: new Tarp("./assets/tarp/tarp_top_right.png"),
-      "`": new Tarp("./assets/tarp/tarp_top_left.png"),
-      1: new Tarp("./assets/tarp/tarp_bottom_right.png"),
-      2: new Tarp("./assets/tarp/tarp_bottom_left.png"),
-
-      // gun shops
-      R: new GunShop(
-        "./assets/floors/woodfloor.png",
-        1000,
-        new Gun("test"),
-        "rifle"
-      ),
-      S: new GunShop(
-        "./assets/floors/woodfloor.png",
-        1250,
-        new Gun("test"),
-        "sniper"
-      ),
-      G: new GunShop(
-        "./assets/floors/green_grass.png",
-        1500,
-        new Gun("test"),
-        "shotgun"
-      ),
-    };
+      console.log("Tiles loaded dynamically:", this.#tiles);
+    } catch (err) {
+      console.error("Error loading tile data:", err);
+    }
   }
 
   // Loads the map from a text file using dictionary lookup
-  loadMap() {
+  async loadMap() {
+    await this.loadTiles(); // Ensure tiles are loaded first
+
     return new Promise((resolve, reject) => {
       fetch(this.#path)
         .then((response) => response.text())
@@ -123,9 +91,6 @@ export class Map {
           this.#mapArray = rows.map((row) => row.split(","));
           this.#height = this.#mapArray.length;
           this.#width = this.#height > 0 ? this.#mapArray[0].length : 0;
-
-          console.log("Raw Map Array:", this.#mapArray);
-          console.log("Width:", this.#width, "Height:", this.#height);
 
           // Replace map characters with tile instances
           for (let y = 0; y < this.#height; y++) {
@@ -143,7 +108,7 @@ export class Map {
             )
           );
 
-          console.log("Map Array After Replacement:", this.#mapArray);
+          console.log("Map loaded with tiles:", this.#mapArray);
           resolve();
         })
         .catch((error) => {
@@ -160,26 +125,12 @@ export class Map {
   getIsShop(x, y) {
     return this.#mapArray[y][x].isStore();
   }
-  drawTileUI(camera, player) {
-    let tileX = player.getTileX(5);
-    let tileY = player.getTileY(5);
-    let tile = this.#mapArray[tileY][tileX];
-
-    if (tile.isInteractable(tileX, tileY)) {
-      tile.drawUI(camera);
-
-      let cost = tile.getCost();
-
-      // console.log(cost)
-    }
-  }
 
   getIsWater(x, y) {
     return this.#mapArray[y][x].isWater();
   }
 
   getPathFindingMap() {
-    // 0 zombie can walk through, 1 it cannot
     return this.#pathfindingMap;
   }
 
@@ -191,14 +142,23 @@ export class Map {
     return this.#height;
   }
 
-  // Returns true if you can walk through the tile
   getWalkthrough(x, y) {
     return this.#mapArray[y][x].canWalkThrough();
   }
 
-  // Returns true if you can shoot through the tile
   getShootthrough(x, y) {
     return this.#mapArray[y][x].canShootThrough();
+  }
+
+  drawTileUI(camera, player) {
+    let tileX = player.getTileX(5);
+    let tileY = player.getTileY(5);
+    let tile = this.#mapArray[tileY][tileX];
+    if (tile.isInteractable(tileX, tileY)) {
+      tile.drawUI(camera);
+      let cost = tile.getCost();
+      // console.log(cost)
+    }
   }
 
   // Draws the visible section of the map
@@ -224,15 +184,12 @@ export class Map {
     let tilesToDrawY = camera.getTilesYOnScreen();
 
     console.log("Draw Y tiles: " + tilesToDrawY);
-
     for (let i = 0; i < 9; i++) {
       for (let j = 0; j < tilesToDrawY; j++) {
         let x_index = xindex + i;
         let y_index = yindex + j;
-
         let x_pos = x + i * tileWidth;
         let y_pos = y + j * tileWidth;
-
         if (x_index < this.#width && y_index < this.#height) {
           let tile = this.#mapArray[y_index][x_index];
           tile.draw(x_pos, y_pos, camera, tileWidth);
