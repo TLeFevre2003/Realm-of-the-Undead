@@ -1,4 +1,5 @@
 # Overview
+
 We created Realm of the Undead, a JavaScript application, to showcase our proficiency in the JavaScript language.
 
 This project served as a platform to exhibit our adeptness with JavaScript syntax and fundamental concepts such as functions, arrays, loops, and event handling. In Realm of the Undead, players engage in battles against waves of zombies using an array of weapons. Noteworthy features include a sophisticated wave-based zombie spawning system, an intuitive map editor, a map loader, a robust pathfinding mechanism for the zombies, original artwork, collision detection, and more.
@@ -10,12 +11,14 @@ For a comprehensive insight into our implementation of JavaScript language synta
 # Development Environment
 
 ### Tools:
+
 - Nvim
 - Visual Studio Code
-    - Local host extensions 
-    - JavaScript extensions
+  - Local host extensions
+  - JavaScript extensions
 
 ### Language / Libraries:
+
 - JavaScript
 - Django (This section is deprecated)
 
@@ -27,6 +30,7 @@ For a comprehensive insight into our implementation of JavaScript language synta
 - [Pathfinding Documentation](https://en.wikipedia.org/wiki/Pathfinding)
 
 # Future Work
+
 - Rework collision detection to use hitboxes to prevent clipping into certain sides of walls.
 - Add controller support and rework how mouse is used.
 - Change how keys are used and let user change keybinds.
@@ -57,11 +61,12 @@ For a comprehensive insight into our implementation of JavaScript language synta
 - Add multiple levels that can be traveled to by elevator or stairs
 - New gun graphics and animations
 
-
-
-
 # Current tasks
+
 - Replace long cases using dictionaries
 - Add controller support
 - Make all controls adjust to user controls
 - organize js files into folders
+
+# Main Current task
+- Map/Map editor rewrite.
