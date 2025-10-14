@@ -27,50 +27,53 @@ export class Gun {
 
   camera;
 
-  #cooldown = 20
-  #cooldown_timer = 0
+  #cooldown = 20;
+  #cooldown_timer = 0;
 
-  constructor(
-    max_ammo_in,
-    name_in,
-    damage_in,
-    bullet_duration_in,
-    bullet_count_in,
-    fire_sfx_in,
-    reload_sfx_in,
-    sprite_left_in,
-    sprite_right_in,
-    accuracy_in,
-    loaded_ammo_in,
-    muzzle_dist_left_in,
-    muzzle_dist_right_in,
-    speed_in,
-    camera
-  ) {
-    this.#current_ammo = max_ammo_in;
-    this.#max_ammo = max_ammo_in;
-    this.#name = name_in;
-    this.#damage = damage_in;
-    this.#bullet_duration = bullet_duration_in;
-    this.#bullet_count = bullet_count_in;
-    this.#fire_sfx = fire_sfx_in;
-    this.#reload_sfx = reload_sfx_in;
-
+  constructor(filename, camera) {
+    this.camera = camera;
     this.#sprite_left = new Image();
     this.#sprite_right = new Image();
 
-    this.#sprite_left.src = sprite_left_in;
-    this.#sprite_right.src = sprite_right_in;
+    // Start loading immediately, but don't make constructor async
+    this.#loadConfig(filename);
+  }
 
-    this.#bullet_accuracy = accuracy_in;
+  async #loadConfig(filename) {
+    try {
+      console.log(
+        `Loading gun config: ./configs/weaponconfigs/${filename}.json`
+      );
+      const response = await fetch(`./configs/weaponconfigs/${filename}.json`);
+      const data = await response.json();
 
-    this.#max_loaded_ammo = loaded_ammo_in;
-    this.#loaded_ammo = loaded_ammo_in;
-    this.#muzzle_dist_left = muzzle_dist_left_in;
-    this.#muzzle_dist_right = muzzle_dist_right_in;
-    this.#bullet_speed = speed_in;
+      this.#name = data.name;
+      this.#max_ammo = data.max_ammo;
+      this.#current_ammo = data.max_ammo;
+      this.#damage = data.damage;
+      this.#bullet_duration = data.bullet_duration;
+      this.#bullet_count = data.bullet_count;
+      this.#bullet_accuracy = data.accuracy;
+      this.#max_loaded_ammo = data.loaded_ammo;
+      this.#loaded_ammo = data.loaded_ammo;
+      this.#muzzle_dist_left = data.muzzle_dist_left;
+      this.#muzzle_dist_right = data.muzzle_dist_right;
+      this.#bullet_speed = data.bullet_speed;
+      this.#fire_sfx = data.fire_sfx;
+      this.#reload_sfx = data.reload_sfx;
+      this.#cost = data.cost ?? this.#cost;
+      this.#cooldown = data.cooldown ?? this.#cooldown;
 
-    this.camera = camera
+      this.#audio = new Audio(this.#fire_sfx);
+
+      this.#sprite_left.src = data.sprite_left;
+      this.#sprite_right.src = data.sprite_right;
+
+      this.isLoaded = true; // mark loaded
+      console.log(`Gun ${this.#name} loaded successfully.`);
+    } catch (err) {
+      console.error(`Failed to load gun config: ${filename}`, err);
+    }
   }
 
   // Return the Gun X tile
@@ -152,7 +155,7 @@ export class Gun {
   }
 
   updateCoolDown() {
-    this.#cooldown_timer += 1
+    this.#cooldown_timer += 1;
   }
 
   // Shoots the gun
@@ -161,7 +164,7 @@ export class Gun {
 
     if (this.#loaded_ammo > 0 && this.#cooldown_timer >= this.#cooldown) {
       // Create an Audio object with an M4A file
-      this.#cooldown_timer = 0
+      this.#cooldown_timer = 0;
       // Play the sound
       this.#audio.pause();
       this.#audio.currentTime = 0;
@@ -192,8 +195,8 @@ export class Gun {
         let xindex = this.getTileX();
         let yindex = this.getTileY();
 
-        console.log("X index: " + xindex)
-        console.log("Y index: " + yindex)
+        console.log("X index: " + xindex);
+        console.log("Y index: " + yindex);
 
         bullets[xindex][yindex].push(bullet);
       }
@@ -202,7 +205,6 @@ export class Gun {
 
   // updates the gun position
   updatePos(player, camera) {
-
     this.#posX = player.getX() - 4;
     this.#posY = player.getY() + 4;
   }
@@ -214,7 +216,7 @@ export class Gun {
 
     let playerx = camera.getPlayerScreenPositionX(player.getX());
 
-    let scale = camera.getScale()
+    let scale = camera.getScale();
 
     let ctx = camera.getCanvas();
 
@@ -227,7 +229,7 @@ export class Gun {
 
     ctx.drawImage(this.#sprite_left, x - 5, y + 2);
 
-    let fontSize = 10 * scale
+    let fontSize = 10 * scale;
     ctx.font = `${fontSize}px serif`;
 
     // ctx.font = "10px serif";

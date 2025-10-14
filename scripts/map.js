@@ -11,6 +11,7 @@ import { GunShop } from "./gunshop.js";
 import { Sniper } from "./sniper.js";
 import { Rifle } from "./rifle.js";
 import { Shotgun } from "./shotgun.js";
+import { Gun } from "./gun.js";
 
 export class Map {
   #path = "./assets/newmap.txt";
@@ -78,19 +79,19 @@ export class Map {
   #rifleShop = new GunShop(
     "./assets/floors/woodfloor.png",
     1000,
-    new Rifle(),
+    new Gun("test", this.camera),
     "rifle"
   );
   #sniperShop = new GunShop(
     "./assets/floors/woodfloor.png",
     1250,
-    new Sniper(),
+    new Gun("test", this.camera),
     "sniper"
   );
   #shotgunShop = new GunShop(
     "./assets/floors/green_grass.png",
     1500,
-    new Shotgun(),
+    new Gun("test", this.camera),
     "shotgun"
   );
 
@@ -357,7 +358,7 @@ export class Map {
   draw(player, camera) {
     let ctx = camera.getCanvas();
 
-    let tileWidth = camera.getTileWidth()
+    let tileWidth = camera.getTileWidth();
 
     let playerX = player.getX();
     let playerY = player.getY();
@@ -373,9 +374,9 @@ export class Map {
     x = Math.floor(x);
     y = Math.floor(y);
 
-    let tilesToDrawY = camera.getTilesYOnScreen()
+    let tilesToDrawY = camera.getTilesYOnScreen();
 
-    console.log("Draw Y tiles: " + tilesToDrawY)
+    console.log("Draw Y tiles: " + tilesToDrawY);
 
     for (let i = 0; i < 9; i++) {
       for (let j = 0; j < tilesToDrawY; j++) {

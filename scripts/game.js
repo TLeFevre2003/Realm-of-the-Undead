@@ -13,7 +13,7 @@ export class Game {
   #mapWidth;
   #mapHeight;
   #pathfindcache = {};
-  #paused = false
+  #paused = false;
 
   constructor(map) {
     let gender = "m";
@@ -82,10 +82,8 @@ export class Game {
 
   // Gameloop, is called 120 times per second
   gameLoop() {
-
-    if (this.#paused)
-    {
-      return
+    if (this.#paused) {
+      return;
     }
 
     // When round is ended spawn new round
@@ -98,9 +96,8 @@ export class Game {
       );
     }
 
-    if (this.player.activegun != null)
-    {
-        this.player.activegun.updateCoolDown();
+    if (this.player.activegun != null) {
+      this.player.activegun.updateCoolDown();
     }
 
     this.#zombiePathFinding();
@@ -123,7 +120,7 @@ export class Game {
           if (bullet.getTileX() != x || bullet.getTileY() != y) {
             // Remove the bullet from the array
             this.bullets[x][y].splice(z, 1);
-            let rad = bullet.getRadius * this.#camera.getScale()
+            let rad = bullet.getRadius * this.#camera.getScale();
             if (
               bullet.getTileX() < this.#mapWidth &&
               bullet.getTileX() >= 0 &&
@@ -183,7 +180,7 @@ export class Game {
 
   // Handles the collision detection
   #checkColisions() {
-    let scale = this.#camera.getScale()
+    let scale = this.#camera.getScale();
 
     // Check for zombie and bullet collisions
     this.bullets.forEach((arrayX, x) => {
@@ -347,8 +344,7 @@ export class Game {
     });
   }
 
-  togglePause()
-  {
-    this.#paused = !this.#paused
+  togglePause() {
+    this.#paused = !this.#paused;
   }
 }

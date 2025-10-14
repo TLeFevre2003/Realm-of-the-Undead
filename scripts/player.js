@@ -2,6 +2,7 @@ import { Entity } from "./entity.js";
 import { Pistol } from "./pistol.js";
 import { Shotgun } from "./shotgun.js";
 import { Rifle } from "./rifle.js";
+import { Gun } from "./gun.js";
 
 export class Player extends Entity {
   #mouseY;
@@ -36,7 +37,13 @@ export class Player extends Entity {
       ybound_in,
       camera
     );
-    this.#gun1 = new Pistol(camera);
+    console.log("Creating gun");
+    this.#gun1 = new Gun("test", this.camera);
+    console.log("Created Gun");
+    console.log("Test new gun");
+    console.log("Bullet count: " + this.#gun1.getBulletCount());
+    console.log("Gun test concluded");
+
     this.activegun = this.#gun1;
   }
 
@@ -158,10 +165,10 @@ export class Player extends Entity {
     let movementX = 0;
     let movementY = 0;
 
-    let speed = this.#speed * this.camera.getScale()
+    let speed = this.#speed * this.camera.getScale();
 
     if (this.isMovingUp()) {
-      movementY -= speed
+      movementY -= speed;
     }
     if (this.isMovingDown()) {
       movementY += speed;
@@ -179,74 +186,102 @@ export class Player extends Entity {
   draw(camera) {
     let ctx = camera.getCanvas();
     let scale = camera.getScale();
-    
+
     let mapPositionX = camera.getPlayerScreenPositionX(this.getX());
     let mapPositionY = camera.getPlayerScreenPositionY(this.getY());
-    
+
     const angle = this.#angle + Math.PI / 2;
     const playerSprite = this.getSprite();
     const playerWidth = playerSprite.width * scale;
     const playerHeight = playerSprite.height * scale;
-    
+
     // Save the current state
     ctx.save();
-    
+
     // Move the context to the player's **scaled** center position
-    ctx.translate(mapPositionX + playerWidth / 2, mapPositionY + playerHeight / 2);
-    
+    ctx.translate(
+      mapPositionX + playerWidth / 2,
+      mapPositionY + playerHeight / 2
+    );
+
     // Rotate the context
     ctx.rotate(angle);
-    
+
     // Draw the player image, centered, and scaled
     ctx.drawImage(
       playerSprite,
       -playerWidth / 2, // x offset
       -playerHeight / 2, // y offset
-      playerWidth,       // scaled width
-      playerHeight       // scaled height
+      playerWidth, // scaled width
+      playerHeight // scaled height
     );
-    
+
+    // GUN DRAWING (after ctx.rotate(angle))
+
+    // Get gun sprite
+    const gunSprite = this.activegun.getSpriteLeft();
+    const gunWidth = gunSprite.width * scale * 0.3;
+    const gunHeight = gunSprite.height * scale * 0.3;
+
+    // Position offset from player center (relative coordinates)
+    // For "top middle" of the player:
+    const offsetX = 0;
+    const offsetY = -playerHeight / 2 - gunHeight / 2 + 13;
+
+    // Draw gun relative to rotated context
+    ctx.drawImage(
+      gunSprite,
+      offsetX - gunWidth / 2, // center gun horizontally
+      offsetY - gunHeight / 2, // move to top middle
+      gunWidth,
+      gunHeight
+    );
+
     // Restore the context to its original state
-    ctx.restore();    
+    ctx.restore();
 
     // Draw the health bars and points text
     ctx.beginPath();
     ctx.lineWidth = "1";
     ctx.fillStyle = "black";
-    ctx.rect(5 * scale, 5 * scale, this.getMaxHealth() * scale / 3, 5 * scale);
+    ctx.rect(
+      5 * scale,
+      5 * scale,
+      (this.getMaxHealth() * scale) / 3,
+      5 * scale
+    );
     ctx.fill();
 
     ctx.beginPath();
     ctx.lineWidth = "1";
     ctx.fillStyle = "red";
-    ctx.rect(5 * scale, 5 * scale, this.getHealth() * scale / 3, 5 * scale);
+    ctx.rect(5 * scale, 5 * scale, (this.getHealth() * scale) / 3, 5 * scale);
     ctx.fill();
 
-    let fontSize = 13 * scale
+    let fontSize = 13 * scale;
 
     ctx.font = `${fontSize}px serif`;
     let pointsstr = this.points.toString() + " points";
 
     ctx.strokeStyle = "black";
-    ctx.lineWidth = 3; 
+    ctx.lineWidth = 3;
     ctx.strokeText(pointsstr, 5 * scale, 100 * scale);
 
     ctx.fillStyle = "white";
     ctx.fillText(pointsstr, 5 * scale, 100 * scale);
 
-
     // Draw the circle pointer
     // Calculate x and y components of offset for pointer
-    let halfPi = Math.PI / 2 // Add half pi to the angle because the drawing angle of player is offset from the unit circle
-    let xComponent = Math.cos(angle+halfPi) * 20 * scale
-    let yComponent = Math.sin(angle+halfPi) * 20 * scale
+    let halfPi = Math.PI / 2; // Add half pi to the angle because the drawing angle of player is offset from the unit circle
+    let xComponent = Math.cos(angle + halfPi) * 20 * scale;
+    let yComponent = Math.sin(angle + halfPi) * 20 * scale;
 
     // console.log(angle)
 
-    let circlePositionX = (mapPositionX + playerWidth / 2) - xComponent
-    let circlePositionY = (mapPositionY + playerHeight / 2) - yComponent
+    let circlePositionX = mapPositionX + playerWidth / 2 - xComponent;
+    let circlePositionY = mapPositionY + playerHeight / 2 - yComponent;
 
-    ctx.lineWidth = 1 * scale; 
+    ctx.lineWidth = 1 * scale;
     ctx.beginPath();
     ctx.arc(circlePositionX, circlePositionY, 1 * scale, 0, 2 * Math.PI);
     ctx.stroke();
