@@ -11,8 +11,7 @@
   "bullet_speed": 1.2,
   "fire_sfx": "./assets/GunShoot.mp3",
   "reload_sfx": "./assets/sounds/pistol_reload.mp3",
-  "sprite_left": "./assets/guns/spread.png",
-  "sprite_right": "./assets/guns/spread.png",
+  "sprite": "./assets/guns/spread.png",
   "cost": 500,
   "cooldown": 25
 }

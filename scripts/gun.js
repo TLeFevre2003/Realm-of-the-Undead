@@ -14,8 +14,7 @@ export class Gun {
   #bullet_accuracy; // the lower this is the more accurate
   #fire_sfx; // filepath
   #reload_sfx; // filepath
-  #sprite_left;
-  #sprite_right; // filepath
+  #sprite;
   #posX;
   #posY;
   #muzzle_dist_left;
@@ -32,8 +31,7 @@ export class Gun {
 
   constructor(filename, camera) {
     this.camera = camera;
-    this.#sprite_left = new Image();
-    this.#sprite_right = new Image();
+    this.#sprite = new Image();
 
     // Start loading immediately, but don't make constructor async
     this.#loadConfig(filename);
@@ -66,8 +64,7 @@ export class Gun {
 
       this.#audio = new Audio(this.#fire_sfx);
 
-      this.#sprite_left.src = data.sprite_left;
-      this.#sprite_right.src = data.sprite_right;
+      this.#sprite.src = data.sprite;
 
       this.isLoaded = true; // mark loaded
       console.log(`Gun ${this.#name} loaded successfully.`);
@@ -120,11 +117,8 @@ export class Gun {
     return this.#reload_sfx;
   }
 
-  getSpriteLeft() {
-    return this.#sprite_left;
-  }
-  getSpriteRight() {
-    return this.#sprite_right;
+  getSprite() {
+    return this.#sprite;
   }
 
   getAmmo() {

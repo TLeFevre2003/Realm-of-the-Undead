@@ -217,7 +217,7 @@ export class Player extends Entity {
 
     if (this.activegun != null) {
       // Get gun sprite
-      const gunSprite = this.activegun.getSpriteLeft();
+      const gunSprite = this.activegun.getSprite();
       const gunWidth = gunSprite.width * scale * 0.3;
       const gunHeight = gunSprite.height * scale * 0.3;
 
