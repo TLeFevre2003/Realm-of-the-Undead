@@ -227,7 +227,7 @@ export class Gun {
     // x+18,y for facing and aiming right
     //changes the gun sprite and position based on the direction given by whereIsMouseX
 
-    ctx.drawImage(this.#sprite_left, x - 5, y + 2);
+    // ctx.drawImage(this.#sprite_left, x - 5, y + 2); Commented out so only the gun UI is drawn because gun is now drawn with player.
 
     let fontSize = 10 * scale;
     ctx.font = `${fontSize}px serif`;

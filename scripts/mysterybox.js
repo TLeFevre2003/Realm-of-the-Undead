@@ -10,10 +10,7 @@
 */
 
 import { Store } from "./store.js";
-import { Pistol } from "./pistol.js";
-import { Shotgun } from "./shotgun.js";
-import { Rifle } from "./rifle.js";
-import { Sniper } from "./sniper.js";
+import { Gun } from "./gun.js";
 
 export class MysteryBox extends Store {
   /*
@@ -46,16 +43,16 @@ export class MysteryBox extends Store {
       // Equip a weapon based on the random number
       switch (randomnum) {
         case 1:
-          player.equipWeapon(new Pistol(player.camera));
+          player.equipWeapon(new Gun("spread", player.camera));
           break;
         case 2:
-          player.equipWeapon(new Shotgun(player.camera));
+          player.equipWeapon(new Gun("spread", player.camera));
           break;
         case 3:
-          player.equipWeapon(new Rifle(player.camera));
+          player.equipWeapon(new Gun("test", player.camera));
           break;
         case 4:
-          player.equipWeapon(new Sniper(player.camera));
+          player.equipWeapon(new Gun("test", player.camera));
           break;
       }
     }

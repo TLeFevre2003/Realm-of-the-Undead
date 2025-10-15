@@ -10,10 +10,6 @@
 */
 
 import { Store } from "./store.js";
-import { Pistol } from "./pistol.js";
-import { Shotgun } from "./shotgun.js";
-import { Rifle } from "./rifle.js";
-import { Sniper } from "./sniper.js";
 
 export class GunShop extends Store {
   inventory;
@@ -49,7 +45,7 @@ export class GunShop extends Store {
       // Deduct the cost of the weapon from the player's points
       player.usePoints(costPoints);
 
-      this.inventory.camera = player.camera // Jank way of setting the camera because the camera doesnt exist yet when the gun was created within map
+      this.inventory.camera = player.camera; // Jank way of setting the camera because the camera doesnt exist yet when the gun was created within map
 
       // Equip the weapon purchased from the shop
       player.equipWeapon(this.inventory);
@@ -66,8 +62,8 @@ export class GunShop extends Store {
   */
   draw(x, y, camera, tileWidth) {
     let ctx = camera.getCanvas();
-    let scale = camera.getScale()
-    
+    let scale = camera.getScale();
+
     // Draw the shop sprite
     ctx.drawImage(this.sprite, x, y, tileWidth, tileWidth);
 

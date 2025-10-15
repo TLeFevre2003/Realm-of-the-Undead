@@ -1,7 +1,4 @@
 import { Entity } from "./entity.js";
-import { Pistol } from "./pistol.js";
-import { Shotgun } from "./shotgun.js";
-import { Rifle } from "./rifle.js";
 import { Gun } from "./gun.js";
 
 export class Player extends Entity {
