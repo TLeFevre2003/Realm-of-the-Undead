@@ -11,7 +11,7 @@ import { GunShop } from "./gunshop.js";
 import { Gun } from "./gun.js";
 
 export class Map {
-  #path = "./assets/newmap.txt";
+  #path = "./assets/maps/newmapformat.txt";
   #mapArray = [];
   #width;
   #height;
@@ -28,8 +28,11 @@ export class Map {
       const response = await fetch(jsonPath);
       const data = await response.json();
 
+      console.log("Map data");
+      console.log(data);
+
       data.tiles.forEach((tileDef) => {
-        const key = tileDef.key;
+        const id = tileDef.id;
         const type = tileDef.type;
         const img = tileDef.image;
         const price = tileDef.price;
@@ -39,34 +42,34 @@ export class Map {
         switch (type) {
           case "Wall":
           case "CabinWall":
-            this.#tiles[key] = new Wall(img);
+            this.#tiles[id] = new Wall(img);
             break;
           case "Floor":
-            this.#tiles[key] = new Floor(img);
+            this.#tiles[id] = new Floor(img);
             break;
           case "Water":
-            this.#tiles[key] = new Water();
+            this.#tiles[id] = new Water();
             break;
           case "Pit":
-            this.#tiles[key] = new Pit();
+            this.#tiles[id] = new Pit();
             break;
           case "AmmoCrate":
-            this.#tiles[key] = new AmmoCrate();
+            this.#tiles[id] = new AmmoCrate();
             break;
           case "HealthCrate":
-            this.#tiles[key] = new HealthCrate();
+            this.#tiles[id] = new HealthCrate();
             break;
           case "MysteryBox":
-            this.#tiles[key] = new MysteryBox();
+            this.#tiles[id] = new MysteryBox();
             break;
           case "UpgradeBench":
-            this.#tiles[key] = new UpgradeBench();
+            this.#tiles[id] = new UpgradeBench();
             break;
           case "Tarp":
-            this.#tiles[key] = new Tarp(img);
+            this.#tiles[id] = new Tarp(img);
             break;
           case "GunShop":
-            this.#tiles[key] = new GunShop(img, price, new Gun(gun), gunType);
+            this.#tiles[id] = new GunShop(img, price, new Gun(gun), gunType);
             break;
           default:
             console.warn(`Unknown tile type: ${type}`);
@@ -97,7 +100,7 @@ export class Map {
             for (let x = 0; x < this.#width; x++) {
               const char = this.#mapArray[y][x];
               const tile = this.#tiles[char];
-              this.#mapArray[y][x] = tile || this.#tiles["l"]; // default to grass
+              this.#mapArray[y][x] = tile || this.#tiles["1"]; // default to grass
             }
           }
 

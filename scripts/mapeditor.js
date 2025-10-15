@@ -12,7 +12,7 @@ import { GunShop } from "./gunshop.js";
 import { Camera } from "./camera.js";
 
 class mapEditor {
-  #path = "./assets/newmap.txt";
+  #path = "./assets/maps/newmapformat.txt";
   #tileConfigPath = "./configs/tiletypes.json";
   #tiles = {};
   #mapArray = [];
@@ -22,17 +22,19 @@ class mapEditor {
   #tileX = 0;
   #tileY = 0;
   #selectedTile;
-  #selectedChar;
+  #selectedId;
 
   constructor() {
-    this.#selectedChar = "3";
+    this.#selectedId = "3";
   }
 
   async loadTilesFromJson() {
     try {
+      // Load all the json data as objects
       const response = await fetch(this.#tileConfigPath);
       const data = await response.json();
 
+      // Loop through each tile
       for (const t of data.tiles) {
         let tileInstance = null;
 
@@ -77,25 +79,38 @@ class mapEditor {
             continue;
         }
 
-        this.#tiles[t.key] = tileInstance;
+        // Save tile to dictionary, key as the dictionary key
+        this.#tiles[t.id] = tileInstance;
       }
 
-      this.#selectedTile = this.#tiles[this.#selectedChar];
+      this.#selectedTile = this.#tiles[this.#selectedId];
       console.log("Tiles loaded successfully.");
     } catch (error) {
       console.error("Error loading tile types:", error);
     }
   }
 
+  // Loads the map, use await to load synchronoulsy
   async loadMap() {
+    // Use try to catch errors.
     try {
+      // Fetch the map
       const response = await fetch(this.#path);
+
+      // Read the response as plain text
       const text = await response.text();
+      // Split each row of the map by the new line character
       const rows = text.trim().split("\n");
+
+      // Split each row into the individual character plit by commas.
       this.#textMap = rows.map((r) => r.split(","));
+
+      // Find the height and widths of the map
       this.#height = this.#textMap.length;
       this.#width = this.#textMap[0].length;
 
+      // Goes through each character in the 2d array, replacing each character with the corresponding tile key.
+      // If there is none found, replace with the default floor tile.
       this.#mapArray = this.#textMap.map((row) =>
         row.map((char) => this.#tiles[char] || this.#tiles["l"])
       );
@@ -138,7 +153,7 @@ class mapEditor {
 
     if (this.#tiles[key]) {
       this.#selectedTile = this.#tiles[key];
-      this.#selectedChar = key;
+      this.#selectedId = key;
       console.log("Selected tile:", key);
     }
 
@@ -156,7 +171,7 @@ class mapEditor {
     const selectedTileY = Math.floor(mouseY / 32) + this.#tileY;
 
     this.#mapArray[selectedTileY][selectedTileX] = this.#selectedTile;
-    this.#textMap[selectedTileY][selectedTileX] = this.#selectedChar;
+    this.#textMap[selectedTileY][selectedTileX] = this.#selectedId;
 
     this.drawMap();
   }
@@ -171,8 +186,31 @@ class mapEditor {
     const selectedTileX = Math.floor(mouseX / 32) + this.#tileX;
     const selectedTileY = Math.floor(mouseY / 32) + this.#tileY;
 
-    this.#selectedChar = this.#textMap[selectedTileY][selectedTileX];
+    this.#selectedId = this.#textMap[selectedTileY][selectedTileX];
     this.#selectedTile = this.#mapArray[selectedTileY][selectedTileX];
+  }
+
+  selectTileById(tileId) {
+    if (this.#tiles[tileId]) {
+      this.#selectedId = tileId;
+      this.#selectedTile = this.#tiles[tileId];
+      console.log(`Selected tile from UI: ${tileId}`);
+    } else {
+      console.warn(`Tile ID ${tileId} not found.`);
+    }
+  }
+
+  writeMap() {
+    const rows = this.#textMap.map((row) => row.join(",")).join("\n");
+    const blob = new Blob([rows], { type: "text/plain" });
+
+    // Save the blob to a file
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = "output.txt"; // Set the filename as needed
+    link.click();
+
+    URL.revokeObjectURL(link.href);
   }
 }
 
@@ -207,4 +245,7 @@ let map = new mapEditor();
   });
 
   map.drawMap();
+
+  // ✅ Make the map globally accessible
+  window.map = map;
 })();

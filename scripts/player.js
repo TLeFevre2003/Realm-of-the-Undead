@@ -28,8 +28,8 @@ export class Player extends Entity {
       health_in,
       max_health_in,
       speed_in,
-      1800,
-      2000,
+      300,
+      300,
       xbound_in,
       ybound_in,
       camera

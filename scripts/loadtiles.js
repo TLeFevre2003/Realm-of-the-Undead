@@ -5,9 +5,8 @@ export async function loadTiles() {
     const tiles = data.tiles;
 
     const container = document.querySelector(".container");
-    container.innerHTML = ""; // clear existing tables if needed
+    container.innerHTML = "";
 
-    // Categorize tiles
     const categories = {};
     for (const tile of tiles) {
       const type = tile.type || "Other";
@@ -15,7 +14,6 @@ export async function loadTiles() {
       categories[type].push(tile);
     }
 
-    // Create a table for each category
     for (const [category, tiles] of Object.entries(categories)) {
       const tableContainer = document.createElement("div");
       tableContainer.classList.add("table-container");
@@ -28,7 +26,7 @@ export async function loadTiles() {
       table.border = 1;
 
       const headerRow = document.createElement("tr");
-      ["Tile", "Key", "Image"].forEach((text) => {
+      ["Tile", "Id", "Image"].forEach((text) => {
         const th = document.createElement("th");
         th.textContent = text;
         headerRow.appendChild(th);
@@ -43,10 +41,10 @@ export async function loadTiles() {
         tdName.textContent = tile.name || tile.type || "tiles";
         tr.appendChild(tdName);
 
-        // Key
-        const tdKey = document.createElement("td");
-        tdKey.textContent = tile.key || "";
-        tr.appendChild(tdKey);
+        // Id
+        const tdId = document.createElement("td");
+        tdId.textContent = tile.id || "";
+        tr.appendChild(tdId);
 
         // Image
         const tdImage = document.createElement("td");
@@ -61,6 +59,13 @@ export async function loadTiles() {
           tdImage.textContent = "—";
         }
         tr.appendChild(tdImage);
+
+        // ✅ Add click handler to select tile
+        tr.addEventListener("click", () => {
+          if (window.map) {
+            window.map.selectTileById(tile.id);
+          }
+        });
 
         table.appendChild(tr);
       }
