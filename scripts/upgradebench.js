@@ -3,6 +3,8 @@ export class UpgradeBench extends Store {
   constructor() {
     super("./assets/floors/workbench.png", 5000, "Upgrade ");
   }
+
+  // NOTE right now it uses the guns own cost variable, in the future this needs to be rectified.
   purchase(player) {
     let playerPoints = player.getPoints();
     let gun = player.getActiveGun();
@@ -23,7 +25,7 @@ export class UpgradeBench extends Store {
     let cost = this.getCost();
     ctx.fillStyle = "rgba(1, 1, 200, 0.5)"; // 0.5 alpha value for transparency
 
-    let scale = camera.getScale()
+    let scale = camera.getScale();
 
     // Draw a rectangle starting at (x, y) with width and height
     var x = 140 * scale;
@@ -35,7 +37,7 @@ export class UpgradeBench extends Store {
     let name = this.getName();
 
     ctx.fillStyle = "black";
-    let fontSize = 13 * scale
+    let fontSize = 13 * scale;
     ctx.font = `${fontSize}px serif`;
     let nametxt = "Buy: " + name;
     ctx.fillText(nametxt, 141 * scale, 20 * scale);

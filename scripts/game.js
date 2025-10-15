@@ -257,7 +257,7 @@ export class Game {
             );
 
             if (distance < playerR + zombieR) {
-              this.player.damage(zombie.getDamage());
+              // this.player.damage(zombie.getDamage());
             }
           });
         }

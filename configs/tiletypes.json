@@ -50,12 +50,12 @@
     { "id": "43", "type": "Tarp", "image": "./assets/tarp/tarp_bottom_right.png" },
     { "id": "44", "type": "Tarp", "image": "./assets/tarp/tarp_bottom_left.png" },
 
-    { "id": "45", "type": "Water" },
-    { "id": "46", "type": "Pit" },
-    { "id": "47", "type": "AmmoCrate" },
-    { "id": "48", "type": "HealthCrate" },
-    { "id": "49", "type": "MysteryBox" },
-    { "id": "50", "type": "UpgradeBench" },
+    { "id": "45", "type": "Water", "image": "./assets/floors/water.png" },
+    { "id": "46", "type": "Pit", "image": "./assets/edge.png" },
+    { "id": "47", "type": "AmmoCrate", "image": "./assets/floors/ammocrate.png" },
+    { "id": "48", "type": "HealthCrate", "image": "./assets/floors/healthcrate.png" },
+    { "id": "49", "type": "MysteryBox", "image": "./assets/floors/mystery_crate.png" },
+    { "id": "50", "type": "UpgradeBench", "image": "./assets/floors/workbench.png" },
 
     {
       "id": "51",

@@ -12,6 +12,6 @@
   "fire_sfx": "./assets/GunShoot.mp3",
   "reload_sfx": "./assets/sounds/pistol_reload.mp3",
   "sprite": "./assets/guns/temp_weapon.png",
-  "cost": 500,
+  "cost": 5000,
   "cooldown": 25
 }
