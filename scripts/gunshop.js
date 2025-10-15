@@ -70,7 +70,7 @@ export class GunShop extends Store {
     // Draw the weapon inventory icon
     if (this.inventory != null) {
       this.inventory.drawImage;
-      ctx.drawImage(this.inventory.getSpriteRight(), x + 13, y + 12);
+      ctx.drawImage(this.inventory.getSprite(), x + 13, y + 12);
     }
   }
 }
