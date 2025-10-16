@@ -17,6 +17,7 @@ export class Map {
   #height;
   #tiles = {};
   #pathfindingMap = [];
+  #spawnPoint;
 
   constructor() {
     // Constructor no longer manually defines tiles
@@ -82,7 +83,7 @@ export class Map {
     }
   }
 
-  // Loads the map from a text file using dictionary lookup
+  // Loads map
   async loadMap() {
     await this.loadTiles(); // Ensure tiles are loaded first
 
@@ -91,18 +92,20 @@ export class Map {
         .then((response) => response.text())
         .then((data) => {
           const rows = data.trim().split("\n");
-          this.#mapArray = rows.map((row) => row.split(","));
+
+          this.#mapArray = rows.map((row, y) =>
+            row.split(",").map((cell, x) => {
+              const [id, prop] = cell.split("-");
+              if (prop === "spawn") {
+                this.#spawnPoint = { x, y }; // Save spawn point
+              }
+              const tile = this.#tiles[id];
+              return tile || this.#tiles["2"]; // default tile
+            })
+          );
+
           this.#height = this.#mapArray.length;
           this.#width = this.#height > 0 ? this.#mapArray[0].length : 0;
-
-          // Replace map characters with tile instances
-          for (let y = 0; y < this.#height; y++) {
-            for (let x = 0; x < this.#width; x++) {
-              const char = this.#mapArray[y][x];
-              const tile = this.#tiles[char];
-              this.#mapArray[y][x] = tile || this.#tiles["1"]; // default to grass
-            }
-          }
 
           // Build pathfinding map (0 = walkable, 1 = blocked)
           this.#pathfindingMap = Array.from({ length: this.#width }, (_, x) =>
@@ -112,6 +115,8 @@ export class Map {
           );
 
           console.log("Map loaded with tiles:", this.#mapArray);
+          if (this.#spawnPoint)
+            console.log("Spawn point found:", this.#spawnPoint);
           resolve();
         })
         .catch((error) => {
@@ -119,6 +124,14 @@ export class Map {
           reject(error);
         });
     });
+  }
+
+  getSpawnX() {
+    return this.#spawnPoint.x;
+  }
+
+  getSpawnY() {
+    return this.#spawnPoint.y;
   }
 
   getMapArray() {

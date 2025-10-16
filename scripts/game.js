@@ -31,6 +31,24 @@ export class Game {
 
     this.#camera = new Camera(this.#mapWidth, this.#mapHeight);
 
+    let spawn_tile_x = this.#map.getSpawnX();
+    let spawn_tile_y = this.#map.getSpawnY();
+
+    console.log(
+      "Player Spawn tiles: (" + spawn_tile_x + ", " + spawn_tile_y + ")"
+    );
+
+    console.log("Find player spawn position");
+    let spawn_pos_x =
+      spawn_tile_x * this.#camera.getScale() * 32 + // Get the tile position
+      16 * this.#camera.getScale(); // Add half a tile position so player spawns in the middle of the tile
+    let spawn_pos_y =
+      spawn_tile_y * this.#camera.getScale() * 32 + // Get the tile position
+      16 * this.#camera.getScale(); // Add half a tile position so player spawns in the middle of the tile
+    console.log(
+      "Player Spawn position: (" + spawn_pos_x + ", " + spawn_pos_y + ")"
+    );
+
     this.player = new Player(
       "gun1",
       "gun2",
@@ -41,7 +59,9 @@ export class Game {
       100,
       this.#mapWidth,
       this.#mapHeight,
-      this.#camera
+      this.#camera,
+      spawn_pos_x,
+      spawn_pos_y
     );
     console.log("player loaded 2");
 
@@ -257,6 +277,7 @@ export class Game {
             );
 
             if (distance < playerR + zombieR) {
+              // Where player takes damage
               this.player.damage(zombie.getDamage());
             }
           });

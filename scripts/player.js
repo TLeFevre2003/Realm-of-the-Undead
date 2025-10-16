@@ -21,15 +21,17 @@ export class Player extends Entity {
     speed_in,
     xbound_in,
     ybound_in,
-    camera
+    camera,
+    x_spawn,
+    y_spawn
   ) {
     super(
       sprite_in,
       health_in,
       max_health_in,
       speed_in,
-      300,
-      300,
+      x_spawn,
+      y_spawn,
       xbound_in,
       ybound_in,
       camera
