@@ -69,4 +69,11 @@ For a comprehensive insight into our implementation of JavaScript language synta
 - organize js files into folders
 
 # Main Current task
-- Map/Map editor rewrite.
+
+- Map/Map editor rewrite. (Done for now)
+- Round/zombie spawn rewrite. (Multiple zombie types, read from json file, spawn nearish to the player, spawn zombies sporatically)
+- Collision rewrite. (Probably circlular/rectangle hitboxes)
+
+# Content ideas
+
+- Homing bullets (weapon or perk or modifier)
